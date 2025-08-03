@@ -71,13 +71,11 @@ function TasksPageContent() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="py-8 px-4 text-center relative">
-        <div className="absolute top-4 right-4 flex items-center gap-4">
-            <div className="flex items-center gap-2 text-right">
-                <div>
-                    <p className="font-semibold text-sm">میزان پیشرفت</p>
-                    <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
-                </div>
-                <ProgressCircle progress={progressPercentage} />
+        <div className="absolute top-4 right-4 flex flex-col items-center gap-2">
+            <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
+            <div className="text-center">
+                <p className="font-semibold text-sm">میزان پیشرفت</p>
+                <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
             </div>
         </div>
         <div className="absolute top-4 left-4">

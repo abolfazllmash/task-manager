@@ -46,7 +46,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({ progress, size = 50, st
                 y="50%"
                 textAnchor="middle"
                 dy=".3em"
-                className="text-xs font-bold fill-foreground rotate-90 origin-center"
+                className="text-base font-bold fill-foreground rotate-90 origin-center"
             >
                 {`${Math.round(progress)}%`}
             </text>
