@@ -1,32 +1,36 @@
 "use client"
 import { TaskProvider } from '@/components/TaskProvider';
-import TaskList from '@/components/TaskList';
-import TaskEditor from '@/components/TaskEditor';
+import TodoList from '@/components/TodoList';
 import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { User } from 'lucide-react';
 
 function TasksPageContent() {
-  const searchParams = useSearchParams();
-  const taskId = searchParams.get('taskId');
-
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <header className="py-8 px-4 border-b shadow-sm">
-        <h1 className="text-3xl font-bold font-headline text-center text-foreground">مدیریت وظایف</h1>
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      <header className="py-12 px-4 text-center relative">
+        <div className="absolute top-4 right-4">
+            <User className="h-6 w-6 text-muted-foreground" />
+        </div>
+        <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
+        <p className="text-muted-foreground mt-2">مدیریت کارها و وظایف</p>
       </header>
       
-      <main className="flex-1 flex flex-col md:flex-row-reverse overflow-hidden p-4 gap-4">
-        <div className="w-full md:w-1/3 h-full">
-          <TaskList selectedTaskId={taskId} />
-        </div>
-        <div className="w-full md:w-2/3 h-full">
-          <TaskEditor key={taskId} selectedTaskId={taskId} />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto">
+          <TodoList />
+
+          <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
+            <div className="w-[100px] h-[100px] bg-muted rounded-full flex-shrink-0" data-ai-hint="placeholder image">
+              <img src="https://placehold.co/100x100.png" alt="Placeholder" className="rounded-full object-cover w-full h-full" />
+            </div>
+            <blockquote className="border-r-4 border-primary pr-4">
+              <p className="text-lg italic">چه فکر کنید که می‌توانید، یا فکر کنید که نمی‌توانید - در هر دو صورت حق با شماست.</p>
+              <cite className="block text-right mt-2 not-italic text-muted-foreground">- هنری فورد</cite>
+            </blockquote>
+          </div>
+
         </div>
       </main>
-
-      <footer className="py-6 px-4 border-t text-center text-muted-foreground">
-        <p>© 2024 - ساخته شده با ❤️</p>
-      </footer>
     </div>
   );
 }

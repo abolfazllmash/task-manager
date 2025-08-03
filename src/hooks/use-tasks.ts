@@ -13,12 +13,7 @@ export function useTasks() {
             const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
             if (storedTasks) {
                 const parsedTasks: Task[] = JSON.parse(storedTasks);
-                setTasks(parsedTasks.sort((a, b) => {
-                    if (a.completed !== b.completed) {
-                        return a.completed ? 1 : -1;
-                    }
-                    return b.updatedAt - a.updatedAt;
-                }));
+                setTasks(parsedTasks.sort((a, b) => b.updatedAt - a.updatedAt));
             }
         } catch (error) {
             console.error("Failed to load tasks from local storage", error);
@@ -37,21 +32,17 @@ export function useTasks() {
         }
     }, [tasks, isLoading]);
 
-    const addTask = useCallback(() => {
+    const addTask = useCallback((title: string) => {
+        if (!title.trim()) return;
         const newTask: Task = {
             id: crypto.randomUUID(),
-            title: "وظیفه جدید",
+            title: title.trim(),
             content: "",
             completed: false,
             createdAt: Date.now(),
             updatedAt: Date.now(),
         };
-        setTasks(prevTasks => [newTask, ...prevTasks].sort((a, b) => {
-            if (a.completed !== b.completed) {
-                return a.completed ? 1 : -1;
-            }
-            return b.updatedAt - a.updatedAt;
-        }));
+        setTasks(prevTasks => [newTask, ...prevTasks]);
         return newTask;
     }, []);
 
@@ -59,12 +50,7 @@ export function useTasks() {
         setTasks(prevTasks =>
             prevTasks.map(task =>
                 task.id === id ? { ...task, title, content, completed: completed ?? task.completed, updatedAt: Date.now() } : task
-            ).sort((a, b) => {
-                if (a.completed !== b.completed) {
-                    return a.completed ? 1 : -1;
-                }
-                return b.updatedAt - a.updatedAt;
-            })
+            )
         );
     }, []);
     
@@ -72,12 +58,7 @@ export function useTasks() {
         setTasks(prevTasks =>
             prevTasks.map(task =>
                 task.id === id ? { ...task, completed: !task.completed, updatedAt: Date.now() } : task
-            ).sort((a, b) => {
-                if (a.completed !== b.completed) {
-                    return a.completed ? 1 : -1;
-                }
-                return b.updatedAt - a.updatedAt;
-            })
+            )
         );
     }, []);
 
