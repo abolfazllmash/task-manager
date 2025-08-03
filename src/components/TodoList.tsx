@@ -160,7 +160,7 @@ export default function TodoList() {
                                         )}
                                     />
                                 </div>
-                                <Button type="submit" className="w-full sm:w-auto">افزودن</Button>
+                                <Button type="submit" className="w-full sm:w-auto hover:no-underline">افزودن</Button>
                             </form>
                         </Form>
                     </AccordionContent>
@@ -194,12 +194,13 @@ export default function TodoList() {
 }
 
 const typeColorMap: Record<TaskType, string> = {
-    personal: 'bg-blue-500',
-    home: 'bg-green-500',
-    work: 'bg-yellow-500',
-    couple: 'bg-red-500',
-    study: 'bg-purple-500',
+    personal: 'bg-blue-500/10',
+    home: 'bg-green-500/10',
+    work: 'bg-yellow-500/10',
+    couple: 'bg-red-500/10',
+    study: 'bg-purple-500/10',
 };
+
 
 function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle: (id:string) => void, onDelete: (id:string) => void, onUpdate: (id:string, data: Partial<Omit<Task, 'id'>>) => void }) {
     const [isDatePickerOpen, setDatePickerOpen] = useState(false);
@@ -210,8 +211,10 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
     };
     
     return (
-        <div className={cn("flex items-center gap-3 p-1.5 bg-card rounded-lg shadow-sm transition-all has-[:focus-within]:ring-2 has-[:focus-within]:ring-primary has-[:focus-within]:ring-offset-2 has-[:focus-within]:ring-offset-background relative")}>
-            <div className={cn("w-1.5 h-full absolute right-0 top-0 rounded-r-lg", typeColorMap[task.type])} />
+        <div className={cn(
+            "flex items-center gap-3 p-3 rounded-lg shadow-sm transition-all has-[:focus-within]:ring-2 has-[:focus-within]:ring-primary has-[:focus-within]:ring-offset-2 has-[:focus-within]:ring-offset-background",
+            typeColorMap[task.type]
+        )}>
             <button onClick={() => onToggle(task.id)} className="p-1.5 z-10">
                 {task.completed ? <CheckSquare className="h-6 w-6 text-primary" /> : <Square className="h-6 w-6 text-muted-foreground" />}
             </button>
@@ -233,7 +236,7 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                         variant={"outline"}
                         size="sm"
                         className={cn(
-                            "text-xs",
+                            "text-xs bg-card/50 hover:bg-card",
                             !task.dueDate && "text-muted-foreground"
                         )}
                     >
