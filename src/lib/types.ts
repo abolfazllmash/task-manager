@@ -5,4 +5,5 @@ export type Task = {
   completed: boolean;
   createdAt: number;
   updatedAt: number;
+  dueDate?: string;
 };

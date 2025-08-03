@@ -32,7 +32,7 @@ export function useTasks() {
         }
     }, [tasks, isLoading]);
 
-    const addTask = useCallback((title: string) => {
+    const addTask = useCallback((title: string, dueDate?: Date) => {
         if (!title.trim()) return;
         const newTask: Task = {
             id: crypto.randomUUID(),
@@ -41,15 +41,16 @@ export function useTasks() {
             completed: false,
             createdAt: Date.now(),
             updatedAt: Date.now(),
+            dueDate: dueDate?.toISOString(),
         };
         setTasks(prevTasks => [newTask, ...prevTasks]);
         return newTask;
     }, []);
 
-    const updateTask = useCallback((id: string, title: string, content: string, completed?: boolean) => {
+    const updateTask = useCallback((id: string, data: Partial<Omit<Task, 'id' | 'createdAt'>>) => {
         setTasks(prevTasks =>
             prevTasks.map(task =>
-                task.id === id ? { ...task, title, content, completed: completed ?? task.completed, updatedAt: Date.now() } : task
+                task.id === id ? { ...task, ...data, updatedAt: Date.now() } : task
             )
         );
     }, []);
