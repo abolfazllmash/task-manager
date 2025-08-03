@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: 'Offline Noter',
-  description: 'An offline-first note-taking application.',
+  title: 'Task Manager',
+  description: 'An offline-first task management application.',
 };
 
 export default function RootLayout({
