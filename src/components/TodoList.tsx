@@ -4,7 +4,7 @@ import { useTaskContext } from '@/components/TaskProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Calendar as CalendarIcon, Plus, Trash2, CheckSquare, Square, Home, User, Briefcase, Heart, BookOpen } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Trash2, CheckSquare, Square, Home, User, Briefcase, Heart, BookOpen, Dumbbell } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,13 +24,14 @@ const taskTypeOptions: { value: TaskType, label: string, icon: React.FC<React.SV
     { value: 'work', label: 'کاری', icon: Briefcase, animationClass: 'animate-wiggle-briefcase' },
     { value: 'couple', label: 'دوتایی', icon: Heart, animationClass: 'animate-pulse-heart' },
     { value: 'study', label: 'درسی', icon: BookOpen, animationClass: 'animate-page-turn' },
+    { value: 'club', label: 'باشگاه', icon: Dumbbell, animationClass: 'animate-lift-dumbbell' },
 ];
 
 const taskSchema = z.object({
   title: z.string().min(1, "عنوان وظیفه نمی‌تواند خالی باشد").max(100, "عنوان بیش از حد طولانی است"),
   dueDate: z.date().optional(),
   dueTime: z.string().optional(),
-  type: z.enum(['personal', 'home', 'work', 'couple', 'study']),
+  type: z.enum(['personal', 'home', 'work', 'couple', 'study', 'club']),
 });
 
 export default function TodoList() {
@@ -199,6 +200,7 @@ const typeColorMap: Record<TaskType, string> = {
     work: 'bg-yellow-500/10',
     couple: 'bg-red-500/10',
     study: 'bg-purple-500/10',
+    club: 'bg-orange-500/10',
 };
 
 

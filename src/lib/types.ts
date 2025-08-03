@@ -1,4 +1,4 @@
-export type TaskType = 'personal' | 'home' | 'work' | 'couple' | 'study';
+export type TaskType = 'personal' | 'home' | 'work' | 'couple' | 'study' | 'club';
 
 export type Task = {
   id: string;

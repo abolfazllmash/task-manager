@@ -97,4 +97,12 @@
   .animate-page-turn {
     animation: page-turn 2s ease-in-out infinite;
   }
+  
+  @keyframes lift-dumbbell {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-5px) rotate(5deg); }
+  }
+  .animate-lift-dumbbell {
+    animation: lift-dumbbell 1.8s ease-in-out infinite;
+  }
 }
