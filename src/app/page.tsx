@@ -1,8 +1,9 @@
 "use client"
-import { TaskProvider } from '@/components/TaskProvider';
+import { TaskProvider, useTaskContext } from '@/components/TaskProvider';
 import TodoList from '@/components/TodoList';
 import { Suspense, useState, useEffect } from 'react';
 import { User } from 'lucide-react';
+import ProgressCircle from '@/components/ProgressCircle';
 
 const quotes = [
   {
@@ -61,10 +62,25 @@ function RandomQuote() {
 
 
 function TasksPageContent() {
+  const { tasks } = useTaskContext();
+
+  const completedTasks = tasks.filter(task => task.completed).length;
+  const totalTasks = tasks.length;
+  const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="py-12 px-4 text-center relative">
-        <div className="absolute top-4 right-4">
+      <header className="py-8 px-4 text-center relative">
+        <div className="absolute top-4 right-4 flex items-center gap-4">
+            <div className="flex items-center gap-2 text-right">
+                <div>
+                    <p className="font-semibold text-sm">میزان پیشرفت</p>
+                    <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+                </div>
+                <ProgressCircle progress={progressPercentage} />
+            </div>
+        </div>
+        <div className="absolute top-4 left-4">
             <User className="h-6 w-6 text-muted-foreground" />
         </div>
         <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
