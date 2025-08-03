@@ -15,7 +15,7 @@ function TasksPageContent() {
         <h1 className="text-3xl font-bold font-headline text-center text-foreground">مدیریت وظایف</h1>
       </header>
       
-      <main className="flex-1 flex flex-col md:flex-row overflow-hidden p-4 gap-4">
+      <main className="flex-1 flex flex-col md:flex-row-reverse overflow-hidden p-4 gap-4">
         <div className="w-full md:w-1/3 h-full">
           <TaskList selectedTaskId={taskId} />
         </div>
