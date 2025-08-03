@@ -78,7 +78,7 @@ function TasksPageContent() {
                 <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
             </div>
         </div>
-        <div className="absolute top-4 left-1/4 p-4 flex items-center gap-2">
+        <div className="absolute top-16 left-1/4 p-4">
           <p className="font-semibold text-sm">سطح شما</p>
         </div>
         <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
