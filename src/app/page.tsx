@@ -1,3 +1,4 @@
+
 "use client"
 import { TaskProvider, useTaskContext } from '@/components/TaskProvider';
 import TodoList from '@/components/TodoList';
@@ -49,8 +50,8 @@ function RandomQuote() {
 
   return (
     <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
-      <div className="w-[100px] h-[100px] bg-muted rounded-full flex-shrink-0" data-ai-hint="motivational figure">
-        <img src="https://placehold.co/100x100.png" alt="Placeholder" className="rounded-full object-cover w-full h-full" />
+      <div className="w-[100px] h-[100px] bg-muted rounded-full flex-shrink-0" data-ai-hint={quote.author.split(' ').join(' ').toLowerCase()}>
+        <img src="https://placehold.co/100x100.png" alt={quote.author} className="rounded-full object-cover w-full h-full" />
       </div>
       <blockquote className="border-r-4 border-primary pr-4">
         <p className="text-lg italic">{quote.text}</p>
