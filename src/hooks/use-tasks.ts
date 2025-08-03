@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import type { Task } from '@/lib/types';
+import type { Task, TaskType } from '@/lib/types';
 
 const TASKS_STORAGE_KEY = 'offline-task-manager-tasks';
 
@@ -32,7 +32,7 @@ export function useTasks() {
         }
     }, [tasks, isLoading]);
 
-    const addTask = useCallback((title: string, dueDate?: Date) => {
+    const addTask = useCallback((title: string, dueDate?: Date, type: TaskType = 'personal') => {
         if (!title.trim()) return;
         const newTask: Task = {
             id: crypto.randomUUID(),
@@ -42,6 +42,7 @@ export function useTasks() {
             createdAt: Date.now(),
             updatedAt: Date.now(),
             dueDate: dueDate?.toISOString(),
+            type: type,
         };
         setTasks(prevTasks => [newTask, ...prevTasks]);
         return newTask;
