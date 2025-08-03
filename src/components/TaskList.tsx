@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { faIR } from 'date-fns/locale';
 import { Plus, Trash2, CheckSquare, Square } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
@@ -49,8 +50,8 @@ export default function TaskList({ selectedTaskId }: TaskListProps) {
     return (
         <div className="flex flex-col h-full bg-card/50">
             <div className="p-4 flex justify-between items-center border-b">
-                <h1 className="text-xl font-bold font-headline">Task Manager</h1>
-                <Button size="icon" variant="ghost" onClick={handleNewTask} aria-label="Create new task">
+                <h1 className="text-xl font-bold font-headline">لیست وظایف</h1>
+                <Button size="icon" variant="ghost" onClick={handleNewTask} aria-label="ایجاد وظیفه جدید">
                     <Plus className="h-5 w-5" />
                 </Button>
             </div>
@@ -67,21 +68,21 @@ export default function TaskList({ selectedTaskId }: TaskListProps) {
                             <div
                                 key={task.id}
                                 className={cn(
-                                    "w-full text-left p-3 rounded-lg transition-colors relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-3",
+                                    "w-full text-right p-3 rounded-lg transition-colors relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring flex items-center gap-3",
                                     selectedTaskId === task.id ? "bg-primary/20" : "hover:bg-accent/50"
                                 )}
                                 onClick={() => router.push(`/?taskId=${task.id}`)}
                                 role="button"
                                 tabIndex={0}
                             >
-                                <button onClick={(e) => handleToggle(e, task.id)} aria-label={task.completed ? 'Mark as incomplete' : 'Mark as complete'}>
+                                <button onClick={(e) => handleToggle(e, task.id)} aria-label={task.completed ? 'علامت‌گذاری به عنوان انجام نشده' : 'علامت‌گذاری به عنوان انجام شده'}>
                                     {task.completed ? <CheckSquare className="h-5 w-5 text-muted-foreground" /> : <Square className="h-5 w-5 text-muted-foreground" />}
                                 </button>
                                 <div className="flex-1 cursor-pointer">
-                                    <h3 className={cn("font-semibold truncate pr-8", task.completed && "line-through text-muted-foreground")}>{task.title || "Untitled"}</h3>
-                                    <p className={cn("text-sm text-muted-foreground truncate pr-8", task.completed && "line-through")}>{task.content || "No details"}</p>
+                                    <h3 className={cn("font-semibold truncate pr-8", task.completed && "line-through text-muted-foreground")}>{task.title || "بدون عنوان"}</h3>
+                                    <p className={cn("text-sm text-muted-foreground truncate pr-8", task.completed && "line-through")}>{task.content || "بدون جزئیات"}</p>
                                     <p className="text-xs text-muted-foreground mt-1">
-                                        {formatDistanceToNow(new Date(task.updatedAt), { addSuffix: true })}
+                                        {formatDistanceToNow(new Date(task.updatedAt), { addSuffix: true, locale: faIR })}
                                     </p>
                                 </div>
                                 <AlertDialog>
@@ -89,23 +90,23 @@ export default function TaskList({ selectedTaskId }: TaskListProps) {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="absolute top-1/2 -translate-y-1/2 right-1 h-8 w-8 opacity-0 group-hover:opacity-100 focus:opacity-100"
+                                        className="absolute top-1/2 -translate-y-1/2 left-1 h-8 w-8 opacity-0 group-hover:opacity-100 focus:opacity-100"
                                         onClick={(e) => e.stopPropagation()}
-                                        aria-label={`Delete task titled ${task.title}`}
+                                        aria-label={`حذف وظیفه با عنوان ${task.title}`}
                                     >
                                         <Trash2 className="h-4 w-4 text-destructive" />
                                     </Button>
                                   </AlertDialogTrigger>
                                   <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                      <AlertDialogTitle>آیا کاملا مطمئن هستید؟</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the task titled "{task.title}".
+                                        این عمل قابل بازگشت نیست. این کار برای همیشه وظیفه با عنوان "{task.title}" را حذف می‌کند.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={(e) => handleDelete(e, task.id)} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+                                      <AlertDialogCancel>لغو</AlertDialogCancel>
+                                      <AlertDialogAction onClick={(e) => handleDelete(e, task.id)} className="bg-destructive hover:bg-destructive/90">حذف</AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
                                 </AlertDialog>
@@ -114,8 +115,8 @@ export default function TaskList({ selectedTaskId }: TaskListProps) {
                     </div>
                 ) : (
                     <div className="p-4 text-center text-muted-foreground h-full flex flex-col items-center justify-center">
-                        <p className="mb-2">No tasks yet.</p>
-                        <Button variant="link" onClick={handleNewTask}>Create one now</Button>
+                        <p className="mb-2">هنوز هیچ وظیفه‌ای وجود ندارد.</p>
+                        <Button variant="link" onClick={handleNewTask}>یکی جدید بسازید</Button>
                     </div>
                 )}
             </ScrollArea>

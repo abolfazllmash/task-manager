@@ -68,8 +68,8 @@ export default function TaskEditor({ selectedTaskId }: TaskEditorProps) {
         return (
             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground bg-background p-8">
                 <CheckSquare className="h-16 w-16 mb-4" />
-                <h2 className="text-2xl font-semibold font-headline">Select a task to view</h2>
-                <p>Or create a new one to get started!</p>
+                <h2 className="text-2xl font-semibold font-headline">یک وظیفه را برای مشاهده انتخاب کنید</h2>
+                <p>یا برای شروع یک وظیفه جدید ایجاد کنید!</p>
             </div>
         );
     }
@@ -77,7 +77,7 @@ export default function TaskEditor({ selectedTaskId }: TaskEditorProps) {
     if (!task) {
         return (
              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground bg-background p-8">
-                <p>Loading task...</p>
+                <p>در حال بارگذاری وظیفه...</p>
             </div>
         )
     }
@@ -95,9 +95,9 @@ export default function TaskEditor({ selectedTaskId }: TaskEditorProps) {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder="Task Title"
+                                            placeholder="عنوان وظیفه"
                                             className="text-2xl font-bold border-none shadow-none focus-visible:ring-0 p-0 h-auto bg-transparent"
-                                            aria-label="Task Title"
+                                            aria-label="عنوان وظیفه"
                                         />
                                     </FormControl>
                                 </FormItem>
@@ -113,9 +113,9 @@ export default function TaskEditor({ selectedTaskId }: TaskEditorProps) {
                                     <FormControl>
                                         <Textarea
                                             {...field}
-                                            placeholder="Add task details..."
+                                            placeholder="جزئیات وظیفه را اضافه کنید..."
                                             className="h-full min-h-[300px] w-full resize-none border-none shadow-none focus-visible:ring-0 text-base p-4 bg-transparent"
-                                            aria-label="Task Details"
+                                            aria-label="جزئیات وظیفه"
                                         />
                                     </FormControl>
                                 </FormItem>

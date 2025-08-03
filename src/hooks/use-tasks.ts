@@ -40,7 +40,7 @@ export function useTasks() {
     const addTask = useCallback(() => {
         const newTask: Task = {
             id: crypto.randomUUID(),
-            title: "New Task",
+            title: "وظیفه جدید",
             content: "",
             completed: false,
             createdAt: Date.now(),
