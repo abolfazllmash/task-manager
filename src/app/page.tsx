@@ -79,7 +79,6 @@ function TasksPageContent() {
             </div>
         </div>
         <div className="absolute top-4 left-4 p-4 flex items-center gap-2">
-          <User className="h-8 w-8 text-muted-foreground" />
           <p className="font-semibold text-sm">سطح شما</p>
         </div>
         <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
