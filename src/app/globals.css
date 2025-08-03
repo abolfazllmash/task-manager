@@ -56,3 +56,45 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes pulse-heart {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+  .animate-pulse-heart {
+    animation: pulse-heart 1.5s ease-in-out infinite;
+  }
+
+  @keyframes wiggle-briefcase {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  .animate-wiggle-briefcase {
+    animation: wiggle-briefcase 1s ease-in-out infinite;
+  }
+
+  @keyframes nod-head {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .animate-nod-head {
+    animation: nod-head 1.2s ease-in-out infinite;
+  }
+
+  @keyframes gentle-rock {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+  .animate-gentle-rock {
+    animation: gentle-rock 2.5s ease-in-out infinite;
+  }
+  
+  @keyframes page-turn {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(0.9); }
+  }
+  .animate-page-turn {
+    animation: page-turn 2s ease-in-out infinite;
+  }
+}

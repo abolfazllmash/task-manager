@@ -18,12 +18,12 @@ import { faIR } from 'date-fns/locale';
 import type { Task, TaskType } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
-const taskTypeOptions: { value: TaskType, label: string, icon: React.FC<React.SVGProps<SVGSVGElement>> }[] = [
-    { value: 'personal', label: 'شخصی', icon: User },
-    { value: 'home', label: 'خونه', icon: Home },
-    { value: 'work', label: 'کاری', icon: Briefcase },
-    { value: 'couple', label: 'دوتایی', icon: Heart },
-    { value: 'study', label: 'درسی', icon: BookOpen },
+const taskTypeOptions: { value: TaskType, label: string, icon: React.FC<React.SVGProps<SVGSVGElement>>, animationClass: string }[] = [
+    { value: 'personal', label: 'شخصی', icon: User, animationClass: 'animate-nod-head' },
+    { value: 'home', label: 'خونه', icon: Home, animationClass: 'animate-gentle-rock' },
+    { value: 'work', label: 'کاری', icon: Briefcase, animationClass: 'animate-wiggle-briefcase' },
+    { value: 'couple', label: 'دوتایی', icon: Heart, animationClass: 'animate-pulse-heart' },
+    { value: 'study', label: 'درسی', icon: BookOpen, animationClass: 'animate-page-turn' },
 ];
 
 const taskSchema = z.object({
@@ -204,7 +204,8 @@ const typeColorMap: Record<TaskType, string> = {
 
 function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle: (id:string) => void, onDelete: (id:string) => void, onUpdate: (id:string, data: Partial<Omit<Task, 'id'>>) => void }) {
     const [isDatePickerOpen, setDatePickerOpen] = useState(false);
-    const TaskIcon = taskTypeOptions.find(opt => opt.value === task.type)?.icon || Square;
+    const taskTypeInfo = taskTypeOptions.find(opt => opt.value === task.type) || { icon: Square, animationClass: '' };
+    const TaskIcon = taskTypeInfo.icon;
 
     const formatTime = (date: Date) => {
         return date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -218,7 +219,7 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
             <button onClick={() => onToggle(task.id)} className="p-1.5 z-10">
                 {task.completed ? <CheckSquare className="h-6 w-6 text-primary" /> : <Square className="h-6 w-6 text-muted-foreground" />}
             </button>
-            <TaskIcon className="h-5 w-5 text-muted-foreground" />
+            <TaskIcon className={cn("h-5 w-5 text-muted-foreground", taskTypeInfo.animationClass)} />
             <input 
                 type="text"
                 defaultValue={task.title}
