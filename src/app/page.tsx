@@ -9,36 +9,43 @@ import ProgressCircle from '@/components/ProgressCircle';
 const quotes = [
   {
     text: "چه فکر کنید که می‌توانید، یا فکر کنید که نمی‌توانید - در هر دو صورت حق با شماست.",
-    author: "هنری فورد"
+    author: "هنری فورد",
+    image: "/authors/henry-ford.jpg"
   },
   {
     text: "زندگی مانند دوچرخه سواری است. برای حفظ تعادل، باید به حرکت ادامه دهید.",
-    author: "آلبرت انیشتین"
+    author: "آلبرت انیشتین",
+    image: "/authors/albert-einstein.jpg"
   },
   {
     text: "بهترین راه برای شروع، دست از حرف زدن برداشتن و شروع به انجام دادن است.",
-    author: "والت دیزنی"
+    author: "والت دیزنی",
+    image: "/authors/walt-disney.jpg"
   },
   {
     text: "همیشه تا زمانی که کاری انجام نشده، غیرممکن به نظر می‌رسد.",
-    author: "نلسون ماندلا"
+    author: "نلسون ماندلا",
+    image: "/authors/nelson-mandela.jpg"
   },
   {
     text: "فرقی نمی‌کند چقدر آهسته حرکت می‌کنید، تا زمانی که متوقف نشوید.",
-    author: "کنفسیوس"
+    author: "کنفسیوس",
+    image: "/authors/confucius.jpg"
   },
   {
     text: "من در مسیرم بارها و بارها شکست خورده‌ام و به همین دلیل است که موفق می‌شوم.",
-    author: "مایکل جردن"
+    author: "مایکل جردن",
+    image: "/authors/michael-jordan.jpg"
   },
   {
     text: "کسانی که می‌گویند کاری نمی‌تواند انجام شود، نباید مزاحم کسانی شوند که در حال انجام آن هستند.",
-    author: "جرج برنارد شاو"
+    author: "جرج برنارد شاو",
+    image: "/authors/george-bernard-shaw.jpg"
   }
 ];
 
 function RandomQuote() {
-  const [quote, setQuote] = useState<{ text: string; author: string } | null>(null);
+  const [quote, setQuote] = useState<(typeof quotes)[number] | null>(null);
 
   useEffect(() => {
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
@@ -51,7 +58,7 @@ function RandomQuote() {
   return (
     <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
       <div className="w-[100px] h-[100px] bg-muted rounded-full flex-shrink-0" data-ai-hint={quote.author.split(' ').join(' ').toLowerCase()}>
-        <img src="https://placehold.co/100x100.png" alt={quote.author} className="rounded-full object-cover w-full h-full" />
+        <img src={quote.image} alt={quote.author} className="rounded-full object-cover w-full h-full" />
       </div>
       <blockquote className="border-r-4 border-primary pr-4">
         <p className="text-lg italic">{quote.text}</p>
@@ -74,7 +81,7 @@ function TasksPageContent() {
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
             <div className="w-1/3 flex justify-start">
-                <div className="flex flex-col items-center gap-2 p-2">
+                 <div className="flex flex-col items-center gap-2 p-2">
                     <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
                     <div className="text-center">
                         <p className="font-semibold text-sm">میزان پیشرفت</p>
