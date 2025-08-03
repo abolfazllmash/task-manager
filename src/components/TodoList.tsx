@@ -41,7 +41,7 @@ export default function TodoList() {
         <div className="space-y-4">
             <Accordion type="single" collapsible defaultValue="item-1" className="w-full bg-card rounded-lg shadow-sm">
                 <AccordionItem value="item-1">
-                    <AccordionTrigger className="px-6 py-4 text-lg font-semibold">
+                    <AccordionTrigger className="px-6 py-4 text-lg font-semibold hover:no-underline">
                        <div className="flex items-center gap-3">
                          <Plus className="h-6 w-6" />
                          <span>افزودن وظیفه جدید</span>
@@ -77,7 +77,7 @@ export default function TodoList() {
             {completedTasks.length > 0 && (
                 <Accordion type="single" collapsible className="w-full bg-card rounded-lg shadow-sm">
                     <AccordionItem value="item-1">
-                         <AccordionTrigger className="px-6 py-4 text-lg font-semibold">
+                         <AccordionTrigger className="px-6 py-4 text-lg font-semibold hover:no-underline">
                             <div className="flex items-center gap-3">
                                 <span>انجام شده ({completedTasks.length})</span>
                             </div>
@@ -96,8 +96,8 @@ export default function TodoList() {
 
 function TaskItem({ task, onToggle, onDelete, onTitleChange }: { task: any, onToggle: (id:string) => void, onDelete: (id:string) => void, onTitleChange: (id:string, title:string) => void }) {
     return (
-        <div className={cn("flex items-center gap-3 p-3 bg-card rounded-lg shadow-sm transition-all focus-within:ring-2 focus-within:ring-primary")}>
-            <button onClick={() => onToggle(task.id)}>
+        <div className={cn("flex items-center gap-3 p-1.5 bg-card rounded-lg shadow-sm transition-all has-[:focus]:ring-2 has-[:focus]:ring-primary has-[:focus]:ring-offset-2 has-[:focus]:ring-offset-background")}>
+            <button onClick={() => onToggle(task.id)} className="p-1.5">
                 {task.completed ? <CheckSquare className="h-6 w-6 text-primary" /> : <Square className="h-6 w-6 text-muted-foreground" />}
             </button>
             <input 
@@ -105,9 +105,12 @@ function TaskItem({ task, onToggle, onDelete, onTitleChange }: { task: any, onTo
                 defaultValue={task.title}
                 onBlur={(e) => onTitleChange(task.id, e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-                className={cn("flex-1 bg-transparent focus:outline-none rounded-md px-2 py-1", task.completed && "line-through text-muted-foreground")}
+                className={cn(
+                    "flex-1 bg-transparent focus:outline-none", 
+                    task.completed && "line-through text-muted-foreground"
+                )}
             />
-            <button onClick={() => onDelete(task.id)} className="text-destructive opacity-50 hover:opacity-100">
+            <button onClick={() => onDelete(task.id)} className="p-1.5 text-destructive opacity-50 hover:opacity-100">
                 <Trash2 className="h-5 w-5" />
             </button>
         </div>
