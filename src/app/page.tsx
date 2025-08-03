@@ -70,19 +70,29 @@ function TasksPageContent() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="py-8 px-4 text-center relative">
-        <div className="absolute top-6 right-1/4 flex flex-col items-center gap-2 p-2">
-            <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
-            <div className="text-center">
-                <p className="font-semibold text-sm">میزان پیشرفت</p>
-                <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+      <header className="py-8 px-4">
+        <div className="container mx-auto flex items-center justify-between">
+            <div className="w-1/3 flex justify-start">
+                 <div className="p-4">
+                    <p className="font-semibold text-sm">سطح شما</p>
+                 </div>
+            </div>
+            
+            <div className="w-1/3 text-center">
+                <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
+                <p className="text-muted-foreground mt-2">مدیریت کارها و وظایف</p>
+            </div>
+
+            <div className="w-1/3 flex justify-end">
+                <div className="flex flex-col items-center gap-2 p-2">
+                    <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
+                    <div className="text-center">
+                        <p className="font-semibold text-sm">میزان پیشرفت</p>
+                        <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div className="absolute top-16 left-1/4 p-4">
-          <p className="font-semibold text-sm">سطح شما</p>
-        </div>
-        <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
-        <p className="text-muted-foreground mt-2">مدیریت کارها و وظایف</p>
       </header>
       
       <main className="flex-1 container mx-auto px-4 py-8">
