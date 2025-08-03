@@ -48,7 +48,7 @@ export default function TaskList({ selectedTaskId }: TaskListProps) {
     }
 
     return (
-        <div className="flex flex-col h-full bg-card/50">
+        <div className="flex flex-col h-full bg-card rounded-lg border shadow-sm">
             <div className="p-4 flex justify-between items-center border-b">
                 <h1 className="text-xl font-bold font-headline">لیست وظایف</h1>
                 <Button size="icon" variant="ghost" onClick={handleNewTask} aria-label="ایجاد وظیفه جدید">

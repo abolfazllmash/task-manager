@@ -66,7 +66,7 @@ export default function TaskEditor({ selectedTaskId }: TaskEditorProps) {
 
     if (!selectedTaskId) {
         return (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground bg-background p-8">
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground bg-card rounded-lg border shadow-sm p-8">
                 <CheckSquare className="h-16 w-16 mb-4" />
                 <h2 className="text-2xl font-semibold font-headline">یک وظیفه را برای مشاهده انتخاب کنید</h2>
                 <p>یا برای شروع یک وظیفه جدید ایجاد کنید!</p>
@@ -76,14 +76,14 @@ export default function TaskEditor({ selectedTaskId }: TaskEditorProps) {
     
     if (!task) {
         return (
-             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground bg-background p-8">
+             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground bg-card rounded-lg border shadow-sm p-8">
                 <p>در حال بارگذاری وظیفه...</p>
             </div>
         )
     }
 
     return (
-        <div className="flex flex-col h-full bg-background">
+        <div className="flex flex-col h-full bg-card rounded-lg border shadow-sm">
             <Form {...form}>
                 <form className="flex flex-col h-full" onSubmit={(e) => e.preventDefault()}>
                     <div className="p-4 border-b flex items-center justify-between gap-4">
