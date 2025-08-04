@@ -3,8 +3,8 @@
 import { TaskProvider, useTaskContext } from '@/components/TaskProvider';
 import TodoList from '@/components/TodoList';
 import { Suspense, useState, useEffect } from 'react';
-import { User } from 'lucide-react';
 import ProgressCircle from '@/components/ProgressCircle';
+import UserLevel from '@/components/UserLevel';
 
 const quotes = [
   {
@@ -59,7 +59,6 @@ function RandomQuote() {
     <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
        <div className="relative w-[100px] h-[100px] flex-shrink-0">
          <img 
-            key={quote.author} 
             src={`/authors/${quote.image}`}
             alt={quote.author} 
             className="rounded-lg object-cover w-full h-full"
@@ -87,9 +86,7 @@ function TasksPageContent() {
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
             <div className="w-1/3 flex justify-start">
-                 <div className="p-4">
-                    <p className="font-semibold text-sm">سطح شما</p>
-                 </div>
+                 <UserLevel completedTasks={completedTasks} />
             </div>
             
             <div className="w-1/3 text-center">
