@@ -156,26 +156,6 @@ export default function TodoList() {
                                     <div className="flex gap-2">
                                         <FormField
                                             control={form.control}
-                                            name="dueHour"
-                                            render={({ field }) => (
-                                                <FormItem className="flex-1">
-                                                    <Select onValueChange={field.onChange} value={field.value}>
-                                                        <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="ساعت" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {hourOptions.map(hour => (
-                                                                <SelectItem key={hour} value={hour}>{hour}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
                                             name="dueMinute"
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
@@ -188,6 +168,26 @@ export default function TodoList() {
                                                         <SelectContent>
                                                             {minuteOptions.map(minute => (
                                                                 <SelectItem key={minute} value={minute}>{minute}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="dueHour"
+                                            render={({ field }) => (
+                                                <FormItem className="flex-1">
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="ساعت" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {hourOptions.map(hour => (
+                                                                <SelectItem key={hour} value={hour}>{hour}</SelectItem>
                                                             ))}
                                                         </SelectContent>
                                                     </Select>
@@ -311,19 +311,6 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                     />
                     <div className="p-2 border-t flex gap-2">
                         <Select
-                            onValueChange={(hour) => handleTimeChange(hour, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
-                            value={taskDate?.getHours().toString().padStart(2, '0')}
-                        >
-                           <SelectTrigger>
-                               <SelectValue placeholder="ساعت" />
-                           </SelectTrigger>
-                           <SelectContent>
-                               {hourOptions.map(hour => (
-                                   <SelectItem key={hour} value={hour}>{hour}</SelectItem>
-                               ))}
-                           </SelectContent>
-                        </Select>
-                        <Select
                            onValueChange={(minute) => handleTimeChange(taskDate?.getHours().toString().padStart(2, '0') || '00', minute)}
                            value={taskDate?.getMinutes().toString().padStart(2, '0')}
                         >
@@ -333,6 +320,19 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                            <SelectContent>
                                {minuteOptions.map(minute => (
                                    <SelectItem key={minute} value={minute}>{minute}</SelectItem>
+                               ))}
+                           </SelectContent>
+                        </Select>
+                        <Select
+                            onValueChange={(hour) => handleTimeChange(hour, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
+                            value={taskDate?.getHours().toString().padStart(2, '0')}
+                        >
+                           <SelectTrigger>
+                               <SelectValue placeholder="ساعت" />
+                           </SelectTrigger>
+                           <SelectContent>
+                               {hourOptions.map(hour => (
+                                   <SelectItem key={hour} value={hour}>{hour}</SelectItem>
                                ))}
                            </SelectContent>
                         </Select>
