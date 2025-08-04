@@ -190,7 +190,7 @@ export default function TodoList() {
             </div>
 
             {completedTasks.length > 0 && (
-                <Accordion type="single" collapsible className="w-full bg-card rounded-lg shadow-sm">
+                <Accordion type="single" collapsible className="w-full bg-green-500/10 rounded-lg shadow-sm">
                     <AccordionItem value="item-1">
                          <AccordionTrigger className="px-6 py-4 text-lg font-semibold hover:no-underline">
                             <div className="flex items-center gap-3">
@@ -239,7 +239,7 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
     return (
         <div className={cn(
             "flex items-center gap-3 p-3 rounded-lg shadow-sm transition-all has-[:focus-within]:ring-2 has-[:focus-within]:ring-primary has-[:focus-within]:ring-offset-2 has-[:focus-within]:ring-offset-background",
-            task.completed ? 'bg-green-500/20' : typeColorMap[task.type]
+            task.completed ? 'bg-card' : typeColorMap[task.type]
         )}>
             <button onClick={() => onToggle(task.id)} className="p-1.5 z-10">
                 {task.completed ? <CheckSquare className="h-6 w-6 text-primary" /> : <Square className="h-6 w-6 text-muted-foreground" />}
@@ -319,5 +319,7 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
         </div>
     )
 }
+
+    
 
     
