@@ -151,17 +151,6 @@ export default function TodoList() {
                                         )}
                                     />
                                     <div className="flex gap-2">
-                                         <FormField
-                                            control={form.control}
-                                            name="dueHour"
-                                            render={({ field }) => (
-                                                <FormItem className="flex-1">
-                                                     <FormControl>
-                                                         <Input {...field} type="number" placeholder="ساعت" min="0" max="23" className="w-full" />
-                                                     </FormControl>
-                                                </FormItem>
-                                            )}
-                                        />
                                         <FormField
                                             control={form.control}
                                             name="dueMinute"
@@ -169,6 +158,17 @@ export default function TodoList() {
                                                 <FormItem className="flex-1">
                                                      <FormControl>
                                                          <Input {...field} type="number" placeholder="دقیقه" min="0" max="59" className="w-full" />
+                                                     </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                         <FormField
+                                            control={form.control}
+                                            name="dueHour"
+                                            render={({ field }) => (
+                                                <FormItem className="flex-1">
+                                                     <FormControl>
+                                                         <Input {...field} type="number" placeholder="ساعت" min="0" max="23" className="w-full" />
                                                      </FormControl>
                                                 </FormItem>
                                             )}
@@ -289,15 +289,6 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                         initialFocus
                     />
                     <div className="p-2 border-t flex gap-2">
-                        <Input 
-                            type="number"
-                            placeholder="ساعت"
-                            min="0"
-                            max="23"
-                            className="w-full"
-                            defaultValue={taskDate?.getHours().toString().padStart(2, '0')}
-                            onBlur={(e) => handleTimeChange(e.target.value, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
-                        />
                          <Input 
                             type="number"
                             placeholder="دقیقه"
@@ -307,6 +298,15 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                             className="w-full"
                             defaultValue={taskDate?.getMinutes().toString().padStart(2, '0')}
                             onBlur={(e) => handleTimeChange(taskDate?.getHours().toString().padStart(2, '0') || '00', e.target.value)}
+                        />
+                        <Input 
+                            type="number"
+                            placeholder="ساعت"
+                            min="0"
+                            max="23"
+                            className="w-full"
+                            defaultValue={taskDate?.getHours().toString().padStart(2, '0')}
+                            onBlur={(e) => handleTimeChange(e.target.value, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
                         />
                     </div>
                 </PopoverContent>
