@@ -171,7 +171,10 @@ export default function TodoList() {
                                                 <Select onValueChange={field.onChange} value={field.value}>
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="انتخاب ساعت" />
+                                                            <div className="flex items-center gap-2">
+                                                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                                                <SelectValue placeholder="ساعت" />
+                                                            </div>
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
@@ -299,7 +302,10 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                     <div className="p-2 border-t">
                         <Select onValueChange={handleTimeChange} value={task.dueDate ? formatTime(new Date(task.dueDate)) : ''}>
                            <SelectTrigger>
-                               <SelectValue placeholder="انتخاب ساعت" />
+                                <div className="flex items-center gap-2">
+                                   <Clock className="h-4 w-4 text-muted-foreground" />
+                                   <SelectValue placeholder="ساعت" />
+                               </div>
                            </SelectTrigger>
                            <SelectContent>
                                {timeOptions.map(time => (
