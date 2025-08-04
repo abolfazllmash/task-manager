@@ -30,22 +30,13 @@ const taskTypeOptions: { value: TaskType, label: string, icon: React.FC<React.SV
 const taskSchema = z.object({
   title: z.string().min(1, "عنوان وظیفه نمی‌تواند خالی باشد").max(100, "عنوان بیش از حد طولانی است"),
   dueDate: z.date().optional(),
-  dueTime: z.string().optional(),
+  dueHour: z.string().optional(),
+  dueMinute: z.string().optional(),
   type: z.enum(['personal', 'home', 'work', 'couple', 'study', 'club']),
 });
 
-const generateTimeOptions = () => {
-    const options = [];
-    for (let i = 0; i < 24; i++) {
-        for (let j = 0; j < 60; j += 30) {
-            const hour = i.toString().padStart(2, '0');
-            const minute = j.toString().padStart(2, '0');
-            options.push(`${hour}:${minute}`);
-        }
-    }
-    return options;
-};
-const timeOptions = generateTimeOptions();
+const hourOptions = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+const minuteOptions = ['00', '30'];
 
 
 export default function TodoList() {
@@ -57,13 +48,12 @@ export default function TodoList() {
 
     const handleAddTask = (data: z.infer<typeof taskSchema>) => {
         let finalDueDate: Date | undefined = data.dueDate;
-        if (data.dueDate && data.dueTime) {
-            const [hours, minutes] = data.dueTime.split(':').map(Number);
+        if (data.dueDate && data.dueHour && data.dueMinute) {
             finalDueDate = new Date(data.dueDate);
-            finalDueDate.setHours(hours, minutes);
+            finalDueDate.setHours(parseInt(data.dueHour), parseInt(data.dueMinute));
         }
         addTask(data.title, finalDueDate, data.type);
-        form.reset({ title: "", type: 'personal', dueDate: undefined, dueTime: undefined});
+        form.reset({ title: "", type: 'personal', dueDate: undefined, dueHour: undefined, dueMinute: undefined});
     };
     
     const uncompletedTasks = tasks.filter(task => !task.completed);
@@ -163,29 +153,48 @@ export default function TodoList() {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="dueTime"
-                                        render={({ field }) => (
-                                            <FormItem className="w-full sm:w-40">
-                                                <Select onValueChange={field.onChange} value={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <div className="flex items-center gap-2">
-                                                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <div className="flex gap-2">
+                                        <FormField
+                                            control={form.control}
+                                            name="dueHour"
+                                            render={({ field }) => (
+                                                <FormItem className="flex-1">
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
                                                                 <SelectValue placeholder="ساعت" />
-                                                            </div>
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {timeOptions.map(time => (
-                                                            <SelectItem key={time} value={time}>{time}</SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </FormItem>
-                                        )}
-                                    />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {hourOptions.map(hour => (
+                                                                <SelectItem key={hour} value={hour}>{hour}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="dueMinute"
+                                            render={({ field }) => (
+                                                <FormItem className="flex-1">
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="دقیقه" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {minuteOptions.map(minute => (
+                                                                <SelectItem key={minute} value={minute}>{minute}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                 </div>
                                 <Button type="submit" className="w-full sm:w-auto hover:no-underline">افزودن</Button>
                             </form>
@@ -239,12 +248,13 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
         return date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', hour12: false });
     };
 
-    const handleTimeChange = (time: string) => {
-        const [hours, minutes] = time.split(':').map(Number);
+    const handleTimeChange = (hour: string, minute: string) => {
         const newDate = task.dueDate ? new Date(task.dueDate) : new Date();
-        newDate.setHours(hours, minutes);
+        newDate.setHours(parseInt(hour), parseInt(minute));
         onUpdate(task.id, { dueDate: newDate.toISOString() });
     };
+    
+    const taskDate = task.dueDate ? new Date(task.dueDate) : null;
     
     return (
         <div className={cn(
@@ -299,17 +309,30 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                         locale={faIR}
                         initialFocus
                     />
-                    <div className="p-2 border-t">
-                        <Select onValueChange={handleTimeChange} value={task.dueDate ? formatTime(new Date(task.dueDate)) : ''}>
+                    <div className="p-2 border-t flex gap-2">
+                        <Select
+                            onValueChange={(hour) => handleTimeChange(hour, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
+                            value={taskDate?.getHours().toString().padStart(2, '0')}
+                        >
                            <SelectTrigger>
-                                <div className="flex items-center gap-2">
-                                   <Clock className="h-4 w-4 text-muted-foreground" />
-                                   <SelectValue placeholder="ساعت" />
-                               </div>
+                               <SelectValue placeholder="ساعت" />
                            </SelectTrigger>
                            <SelectContent>
-                               {timeOptions.map(time => (
-                                   <SelectItem key={time} value={time}>{time}</SelectItem>
+                               {hourOptions.map(hour => (
+                                   <SelectItem key={hour} value={hour}>{hour}</SelectItem>
+                               ))}
+                           </SelectContent>
+                        </Select>
+                        <Select
+                           onValueChange={(minute) => handleTimeChange(taskDate?.getHours().toString().padStart(2, '0') || '00', minute)}
+                           value={taskDate?.getMinutes().toString().padStart(2, '0')}
+                        >
+                           <SelectTrigger>
+                               <SelectValue placeholder="دقیقه" />
+                           </SelectTrigger>
+                           <SelectContent>
+                               {minuteOptions.map(minute => (
+                                   <SelectItem key={minute} value={minute}>{minute}</SelectItem>
                                ))}
                            </SelectContent>
                         </Select>
