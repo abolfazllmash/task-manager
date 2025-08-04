@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useEffect } from 'react';
-import { TaskProvider, useTaskContext } from './TaskProvider';
+import React, { useEffect } from 'react';
+import { TaskProvider, useTaskContext } from '@/components/TaskProvider';
 
 const levels = [
     { name: "novice", threshold: 0 },
@@ -27,9 +27,13 @@ function ThemeUpdater() {
 
     useEffect(() => {
         const themeName = getThemeName(completedTasks);
-        document.documentElement.className = ''; 
-        document.documentElement.classList.add(themeName);
-        console.log(`Theme updated to: ${themeName}`);
+        const classList = document.documentElement.classList;
+        for (let i = classList.length - 1; i >= 0; i--) {
+            if (classList[i].startsWith('theme-')) {
+                classList.remove(classList[i]);
+            }
+        }
+        classList.add(themeName);
     }, [completedTasks]);
 
     return null;
