@@ -87,9 +87,13 @@ function TasksPageContent() {
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
             <div className="w-1/3 flex justify-start">
-                 <div className="p-4">
-                    <p className="font-semibold text-sm">سطح شما</p>
-                 </div>
+              <div className="flex flex-col items-center gap-2 p-2">
+                  <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
+                  <div className="text-center">
+                      <p className="font-semibold text-sm">میزان پیشرفت</p>
+                      <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+                  </div>
+              </div>
             </div>
             
             <div className="w-1/3 text-center">
@@ -98,13 +102,9 @@ function TasksPageContent() {
             </div>
 
             <div className="w-1/3 flex justify-end">
-                <div className="flex flex-col items-center gap-2 p-2">
-                    <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
-                    <div className="text-center">
-                        <p className="font-semibold text-sm">میزان پیشرفت</p>
-                        <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
-                    </div>
-                </div>
+                 <div className="p-4">
+                    <p className="font-semibold text-sm">سطح شما</p>
+                 </div>
             </div>
         </div>
       </header>
