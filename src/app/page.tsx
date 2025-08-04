@@ -66,7 +66,7 @@ function RandomQuote() {
          />
        </div>
       <blockquote className="border-r-4 border-primary pr-4">
-        <p className="text-lg italic">{quote.text}</p>
+        <p className="text-lg italic">"{quote.text}"</p>
         <cite className="block text-right mt-2 not-italic text-muted-foreground">- {quote.author}</cite>
       </blockquote>
     </div>
