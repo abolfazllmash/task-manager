@@ -9,10 +9,10 @@ interface UserLevelProps {
 
 const levels = [
     { name: "تازه‌کار", icon: Award, threshold: 0, color: "text-gray-500" },
-    { name: "راسخ", icon: Zap, threshold: 5, color: "text-blue-500" },
-    { name: "نینجا", icon: Star, threshold: 15, color: "text-purple-500" },
-    { name: "سامورایی", icon: Swords, threshold: 30, color: "text-red-500" },
-    { name: "شوالیه", icon: Shield, threshold: 50, color: "text-yellow-500" },
+    { name: "راسخ", icon: Zap, threshold: 21, color: "text-blue-500" },
+    { name: "نینجا", icon: Star, threshold: 51, color: "text-purple-500" },
+    { name: "سامورایی", icon: Swords, threshold: 101, color: "text-red-500" },
+    { name: "شوالیه", icon: Shield, threshold: 221, color: "text-yellow-500" },
 ];
 
 function getUserLevel(completedTasks: number) {
@@ -40,3 +40,4 @@ export default function UserLevel({ completedTasks }: UserLevelProps) {
         </div>
     );
 }
+
