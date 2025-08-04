@@ -10,37 +10,37 @@ const quotes = [
   {
     text: "چه فکر کنید که می‌توانید، یا فکر کنید که نمی‌توانید - در هر دو صورت حق با شماست.",
     author: "هنری فورد",
-    image: "/authors/henry-ford.jpg"
+    image: "/authors/henry-ford.png"
   },
   {
     text: "زندگی مانند دوچرخه سواری است. برای حفظ تعادل، باید به حرکت ادامه دهید.",
     author: "آلبرت انیشتین",
-    image: "/authors/albert-einstein.jpg"
+    image: "/authors/albert-einstein.png"
   },
   {
     text: "بهترین راه برای شروع، دست از حرف زدن برداشتن و شروع به انجام دادن است.",
     author: "والت دیزنی",
-    image: "/authors/walt-disney.jpg"
+    image: "/authors/walt-disney.png"
   },
   {
     text: "همیشه تا زمانی که کاری انجام نشده، غیرممکن به نظر می‌رسد.",
     author: "نلسون ماندلا",
-    image: "/authors/nelson-mandela.jpg"
+    image: "/authors/nelson-mandela.png"
   },
   {
     text: "فرقی نمی‌کند چقدر آهسته حرکت می‌کنید، تا زمانی که متوقف نشوید.",
     author: "کنفسیوس",
-    image: "/authors/confucius.jpg"
+    image: "/authors/confucius.png"
   },
   {
     text: "من در مسیرم بارها و بارها شکست خورده‌ام و به همین دلیل است که موفق می‌شوم.",
     author: "مایکل جردن",
-    image: "/authors/michael-jordan.jpg"
+    image: "/authors/michael-jordan.png"
   },
   {
     text: "کسانی که می‌گویند کاری نمی‌تواند انجام شود، نباید مزاحم کسانی شوند که در حال انجام آن هستند.",
     author: "جرج برنارد شاو",
-    image: "/authors/george-bernard-shaw.jpg"
+    image: "/authors/george-bernard-shaw.png"
   }
 ];
 
@@ -87,13 +87,9 @@ function TasksPageContent() {
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
             <div className="w-1/3 flex justify-start">
-                 <div className="flex flex-col items-center gap-2 p-2">
-                    <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
-                    <div className="text-center">
-                        <p className="font-semibold text-sm">میزان پیشرفت</p>
-                        <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
-                    </div>
-                </div>
+                 <div className="p-4">
+                    <p className="font-semibold text-sm">سطح شما</p>
+                 </div>
             </div>
             
             <div className="w-1/3 text-center">
@@ -102,9 +98,13 @@ function TasksPageContent() {
             </div>
 
             <div className="w-1/3 flex justify-end">
-                 <div className="p-4">
-                    <p className="font-semibold text-sm">سطح شما</p>
-                 </div>
+                <div className="flex flex-col items-center gap-2 p-2">
+                    <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
+                    <div className="text-center">
+                        <p className="font-semibold text-sm">میزان پیشرفت</p>
+                        <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+                    </div>
+                </div>
             </div>
         </div>
       </header>
