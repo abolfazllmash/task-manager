@@ -11,11 +11,11 @@ import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import React from 'react';
 
 const levels = [
-    { name: "تازه‌کار", icon: Award, threshold: 0, color: "text-gray-500" },
-    { name: "راسخ", icon: Zap, threshold: 21, color: "text-blue-500" },
-    { name: "نینجا", icon: Star, threshold: 51, color: "text-purple-500" },
-    { name: "سامورایی", icon: Swords, threshold: 101, color: "text-red-500" },
-    { name: "شوالیه", icon: Shield, threshold: 221, color: "text-yellow-500" },
+    { name: "تازه‌کار", icon: Award, threshold: 0 },
+    { name: "راسخ", icon: Zap, threshold: 21 },
+    { name: "نینجا", icon: Star, threshold: 51 },
+    { name: "سامورایی", icon: Swords, threshold: 101 },
+    { name: "شوالیه", icon: Shield, threshold: 221 },
 ];
 
 function getUserLevel(completedTasks: number) {
@@ -88,7 +88,7 @@ export default function StatsPageContent() {
             <div className="lg:col-span-1 space-y-6">
                 <Card>
                     <CardHeader className="items-center text-center">
-                        <currentLevel.icon className={`h-20 w-20 p-3 rounded-full bg-card shadow-lg ${currentLevel.color}`} />
+                        <currentLevel.icon className="h-20 w-20 p-3 rounded-full bg-card shadow-lg text-primary" />
                         <CardTitle className="text-2xl pt-2">{currentLevel.name}</CardTitle>
                         <CardDescription>شما {completedTasksCount} وظیفه را با موفقیت انجام داده‌اید</CardDescription>
                     </CardHeader>
@@ -118,7 +118,7 @@ export default function StatsPageContent() {
                             {levels.map(level => (
                                 <li key={level.name} className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <level.icon className={`h-6 w-6 ${level.color}`} />
+                                        <level.icon className="h-6 w-6 text-primary" />
                                         <span className="font-semibold">{level.name}</span>
                                     </div>
                                     <span className="text-sm text-muted-foreground">{level.threshold}+ وظیفه</span>
