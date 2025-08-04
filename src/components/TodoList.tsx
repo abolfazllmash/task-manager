@@ -4,7 +4,7 @@ import { useTaskContext } from '@/components/TaskProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Calendar as CalendarIcon, Plus, Trash2, CheckSquare, Square, Home, User, Briefcase, Heart, BookOpen, Dumbbell } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, Trash2, CheckSquare, Square, Home, User, Briefcase, Heart, BookOpen, Dumbbell, Clock } from 'lucide-react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -33,6 +33,20 @@ const taskSchema = z.object({
   dueTime: z.string().optional(),
   type: z.enum(['personal', 'home', 'work', 'couple', 'study', 'club']),
 });
+
+const generateTimeOptions = () => {
+    const options = [];
+    for (let i = 0; i < 24; i++) {
+        for (let j = 0; j < 60; j += 30) {
+            const hour = i.toString().padStart(2, '0');
+            const minute = j.toString().padStart(2, '0');
+            options.push(`${hour}:${minute}`);
+        }
+    }
+    return options;
+};
+const timeOptions = generateTimeOptions();
+
 
 export default function TodoList() {
     const { tasks, addTask, deleteTask, toggleTaskCompletion, updateTask } = useTaskContext();
@@ -153,10 +167,19 @@ export default function TodoList() {
                                         control={form.control}
                                         name="dueTime"
                                         render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <Input type="time" {...field} className="w-full sm:w-auto" />
-                                                </FormControl>
+                                            <FormItem className="w-full sm:w-40">
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="انتخاب ساعت" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {timeOptions.map(time => (
+                                                            <SelectItem key={time} value={time}>{time}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                             </FormItem>
                                         )}
                                     />
@@ -212,6 +235,13 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
     const formatTime = (date: Date) => {
         return date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', hour12: false });
     };
+
+    const handleTimeChange = (time: string) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        const newDate = task.dueDate ? new Date(task.dueDate) : new Date();
+        newDate.setHours(hours, minutes);
+        onUpdate(task.id, { dueDate: newDate.toISOString() });
+    };
     
     return (
         <div className={cn(
@@ -239,7 +269,7 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                         variant={"outline"}
                         size="sm"
                         className={cn(
-                            "text-xs bg-card/50 hover:bg-card",
+                            "text-xs bg-card/50 hover:bg-card w-40 justify-start",
                             !task.dueDate && "text-muted-foreground"
                         )}
                     >
@@ -267,18 +297,16 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                         initialFocus
                     />
                     <div className="p-2 border-t">
-                        <input
-                            type="time"
-                            defaultValue={task.dueDate ? formatTime(new Date(task.dueDate)) : ''}
-                            onChange={(e) => {
-                                const newTime = e.target.value;
-                                const [hours, minutes] = newTime.split(':').map(Number);
-                                const newDate = task.dueDate ? new Date(task.dueDate) : new Date();
-                                newDate.setHours(hours, minutes);
-                                onUpdate(task.id, { dueDate: newDate.toISOString() });
-                            }}
-                            className="w-full bg-transparent p-1 border rounded-md"
-                        />
+                        <Select onValueChange={handleTimeChange} value={task.dueDate ? formatTime(new Date(task.dueDate)) : ''}>
+                           <SelectTrigger>
+                               <SelectValue placeholder="انتخاب ساعت" />
+                           </SelectTrigger>
+                           <SelectContent>
+                               {timeOptions.map(time => (
+                                   <SelectItem key={time} value={time}>{time}</SelectItem>
+                               ))}
+                           </SelectContent>
+                        </Select>
                     </div>
                 </PopoverContent>
             </Popover>
