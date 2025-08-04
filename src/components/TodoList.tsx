@@ -35,9 +35,6 @@ const taskSchema = z.object({
   type: z.enum(['personal', 'home', 'work', 'couple', 'study', 'club']),
 });
 
-const hourOptions = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
-const minuteOptions = ['00', '30'];
-
 
 export default function TodoList() {
     const { tasks, addTask, deleteTask, toggleTaskCompletion, updateTask } = useTaskContext();
@@ -154,43 +151,25 @@ export default function TodoList() {
                                         )}
                                     />
                                     <div className="flex gap-2">
-                                        <FormField
+                                         <FormField
                                             control={form.control}
-                                            name="dueMinute"
+                                            name="dueHour"
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
-                                                    <Select onValueChange={field.onChange} value={field.value}>
-                                                        <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="دقیقه" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {minuteOptions.map(minute => (
-                                                                <SelectItem key={minute} value={minute}>{minute}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
+                                                     <FormControl>
+                                                         <Input {...field} type="number" placeholder="ساعت" min="0" max="23" className="w-full" />
+                                                     </FormControl>
                                                 </FormItem>
                                             )}
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="dueHour"
+                                            name="dueMinute"
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
-                                                    <Select onValueChange={field.onChange} value={field.value}>
-                                                        <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="ساعت" />
-                                                            </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                            {hourOptions.map(hour => (
-                                                                <SelectItem key={hour} value={hour}>{hour}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
+                                                     <FormControl>
+                                                         <Input {...field} type="number" placeholder="دقیقه" min="0" max="59" className="w-full" />
+                                                     </FormControl>
                                                 </FormItem>
                                             )}
                                         />
@@ -250,7 +229,7 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
 
     const handleTimeChange = (hour: string, minute: string) => {
         const newDate = task.dueDate ? new Date(task.dueDate) : new Date();
-        newDate.setHours(parseInt(hour), parseInt(minute));
+        newDate.setHours(parseInt(hour, 10), parseInt(minute, 10));
         onUpdate(task.id, { dueDate: newDate.toISOString() });
     };
     
@@ -310,32 +289,25 @@ function TaskItem({ task, onToggle, onDelete, onUpdate }: { task: Task, onToggle
                         initialFocus
                     />
                     <div className="p-2 border-t flex gap-2">
-                        <Select
-                           onValueChange={(minute) => handleTimeChange(taskDate?.getHours().toString().padStart(2, '0') || '00', minute)}
-                           value={taskDate?.getMinutes().toString().padStart(2, '0')}
-                        >
-                           <SelectTrigger>
-                               <SelectValue placeholder="دقیقه" />
-                           </SelectTrigger>
-                           <SelectContent>
-                               {minuteOptions.map(minute => (
-                                   <SelectItem key={minute} value={minute}>{minute}</SelectItem>
-                               ))}
-                           </SelectContent>
-                        </Select>
-                        <Select
-                            onValueChange={(hour) => handleTimeChange(hour, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
-                            value={taskDate?.getHours().toString().padStart(2, '0')}
-                        >
-                           <SelectTrigger>
-                               <SelectValue placeholder="ساعت" />
-                           </SelectTrigger>
-                           <SelectContent>
-                               {hourOptions.map(hour => (
-                                   <SelectItem key={hour} value={hour}>{hour}</SelectItem>
-                               ))}
-                           </SelectContent>
-                        </Select>
+                        <Input 
+                            type="number"
+                            placeholder="ساعت"
+                            min="0"
+                            max="23"
+                            className="w-full"
+                            defaultValue={taskDate?.getHours().toString().padStart(2, '0')}
+                            onBlur={(e) => handleTimeChange(e.target.value, taskDate?.getMinutes().toString().padStart(2, '0') || '00')}
+                        />
+                         <Input 
+                            type="number"
+                            placeholder="دقیقه"
+                            min="0"
+                            max="59"
+                            step="30"
+                            className="w-full"
+                            defaultValue={taskDate?.getMinutes().toString().padStart(2, '0')}
+                            onBlur={(e) => handleTimeChange(taskDate?.getHours().toString().padStart(2, '0') || '00', e.target.value)}
+                        />
                     </div>
                 </PopoverContent>
             </Popover>
