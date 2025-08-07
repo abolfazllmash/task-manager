@@ -204,9 +204,11 @@ function TaskItem({ task, subTasks, onToggle, onDelete, onUpdate }: { task: Task
                 </div>
             )}
             
-            <div className="pl-6 pt-2">
-                <AddTaskForm parentId={task.id} />
-            </div>
+            {!task.completed && (
+                <div className="pl-6 pt-2">
+                    <AddTaskForm parentId={task.id} />
+                </div>
+            )}
 
         </div>
     )
@@ -297,5 +299,7 @@ export default function TodoList() {
         </div>
     );
 }
+
+    
 
     
