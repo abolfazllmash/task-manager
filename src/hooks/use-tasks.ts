@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect, useCallback } from 'react';
 import type { Task, TaskType } from '@/lib/types';
@@ -25,7 +26,7 @@ export function useTasks() {
                     const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
                      if (storedTasks) {
                         const parsedTasks: Task[] = JSON.parse(storedTasks);
-                        setTasks(parsedTasks.sort((a, b) => b.updatedAt - a.updatedAt));
+                        setTasks(parsedTasks);
                     }
                 }
             } else {
@@ -33,7 +34,7 @@ export function useTasks() {
                 const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
                 if (storedTasks) {
                     const parsedTasks: Task[] = JSON.parse(storedTasks);
-                    setTasks(parsedTasks.sort((a, b) => b.updatedAt - a.updatedAt));
+                    setTasks(parsedTasks);
                 }
             }
         } catch (error) {
@@ -53,7 +54,7 @@ export function useTasks() {
         }
     }, [tasks, isLoading]);
 
-    const addTask = useCallback((title: string, dueDate?: Date, type: TaskType = 'personal') => {
+    const addTask = useCallback((title: string, dueDate?: Date, type: TaskType = 'personal', parentId?: string) => {
         if (!title.trim()) return;
         const newTask: Task = {
             id: crypto.randomUUID(),
@@ -64,8 +65,9 @@ export function useTasks() {
             updatedAt: Date.now(),
             dueDate: dueDate?.toISOString(),
             type: type,
+            parentId: parentId,
         };
-        setTasks(prevTasks => [newTask, ...prevTasks]);
+        setTasks(prevTasks => [...prevTasks, newTask]);
         return newTask;
     }, []);
 
@@ -78,15 +80,55 @@ export function useTasks() {
     }, []);
     
     const toggleTaskCompletion = useCallback((id: string) => {
-        setTasks(prevTasks =>
-            prevTasks.map(task =>
-                task.id === id ? { ...task, completed: !task.completed, updatedAt: Date.now() } : task
-            )
-        );
+        setTasks(prevTasks => {
+            const newTasks = [...prevTasks];
+            const task = newTasks.find(t => t.id === id);
+            if (!task) return prevTasks;
+            
+            const newCompletedState = !task.completed;
+            task.completed = newCompletedState;
+            task.updatedAt = Date.now();
+
+            // If task has a parent, check if all siblings are now completed
+            if (task.parentId) {
+                const parent = newTasks.find(t => t.id === task.parentId);
+                if (parent) {
+                    const siblings = newTasks.filter(t => t.parentId === task.parentId);
+                    const allSiblingsCompleted = siblings.every(s => s.completed);
+                    if (allSiblingsCompleted !== parent.completed) {
+                       parent.completed = allSiblingsCompleted;
+                       parent.updatedAt = Date.now();
+                    }
+                }
+            }
+            // If the task is a parent, update its children
+            else {
+                const subTasks = newTasks.filter(t => t.parentId === id);
+                subTasks.forEach(sub => {
+                    if(sub.completed !== newCompletedState) {
+                       sub.completed = newCompletedState;
+                       sub.updatedAt = Date.now();
+                    }
+                });
+            }
+            return newTasks;
+        });
     }, []);
 
     const deleteTask = useCallback((id: string) => {
-        setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+        setTasks(prevTasks => {
+            const taskToDelete = prevTasks.find(t => t.id === id);
+            if (!taskToDelete) return prevTasks;
+
+            const idsToDelete = [id];
+            // If it's a parent task, also mark its children for deletion
+            if (!taskToDelete.parentId) {
+                const childrenIds = prevTasks.filter(t => t.parentId === id).map(t => t.id);
+                idsToDelete.push(...childrenIds);
+            }
+
+            return prevTasks.filter(task => !idsToDelete.includes(task.id));
+        });
     }, []);
 
 

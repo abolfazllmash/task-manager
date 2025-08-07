@@ -1,3 +1,4 @@
+
 export type TaskType = 'personal' | 'home' | 'work' | 'couple' | 'study' | 'club';
 
 export type Task = {
@@ -9,4 +10,5 @@ export type Task = {
   updatedAt: number;
   dueDate?: string;
   type: TaskType;
+  parentId?: string;
 };
