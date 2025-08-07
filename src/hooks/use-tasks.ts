@@ -81,37 +81,38 @@ export function useTasks() {
     
     const toggleTaskCompletion = useCallback((id: string) => {
         setTasks(prevTasks => {
-            const newTasks = [...prevTasks];
-            const task = newTasks.find(t => t.id === id);
+            const tasksCopy = prevTasks.map(t => ({...t})); // Deep copy for mutation
+            const task = tasksCopy.find(t => t.id === id);
             if (!task) return prevTasks;
-            
+    
             const newCompletedState = !task.completed;
             task.completed = newCompletedState;
             task.updatedAt = Date.now();
-
-            // If task has a parent, check if all siblings are now completed
-            if (task.parentId) {
-                const parent = newTasks.find(t => t.id === task.parentId);
+    
+            // If it's a parent task, update all its children
+            if (!task.parentId) {
+                tasksCopy.forEach(child => {
+                    if (child.parentId === id) {
+                        child.completed = newCompletedState;
+                        child.updatedAt = Date.now();
+                    }
+                });
+            }
+            // If it's a sub-task, check if the parent needs updating
+            else {
+                const parent = tasksCopy.find(p => p.id === task.parentId);
                 if (parent) {
-                    const siblings = newTasks.filter(t => t.parentId === task.parentId);
+                    const siblings = tasksCopy.filter(s => s.parentId === parent.id);
                     const allSiblingsCompleted = siblings.every(s => s.completed);
-                    if (allSiblingsCompleted !== parent.completed) {
+                    
+                    if (parent.completed !== allSiblingsCompleted) {
                        parent.completed = allSiblingsCompleted;
                        parent.updatedAt = Date.now();
                     }
                 }
             }
-            // If the task is a parent, update its children
-            else {
-                const subTasks = newTasks.filter(t => t.parentId === id);
-                subTasks.forEach(sub => {
-                    if(sub.completed !== newCompletedState) {
-                       sub.completed = newCompletedState;
-                       sub.updatedAt = Date.now();
-                    }
-                });
-            }
-            return newTasks;
+    
+            return tasksCopy;
         });
     }, []);
 
