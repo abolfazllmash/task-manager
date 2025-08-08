@@ -101,7 +101,8 @@ export default function ProfilePageContent() {
 
     const taskTypeCounts = tasks.reduce((acc, task) => {
         if (task.completed) {
-            acc[task.type] = (acc[task.type] || 0) + 1;
+            const type = task.type || 'personal';
+            acc[type] = (acc[type] || 0) + 1;
         }
         return acc;
     }, {} as Record<TaskType, number>);
