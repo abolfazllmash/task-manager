@@ -64,7 +64,7 @@ export function useTasks() {
             createdAt: Date.now(),
             updatedAt: Date.now(),
             dueDate: dueDate?.toISOString(),
-            type: type,
+            type,
             parentId: parentId,
         };
         setTasks(prevTasks => [...prevTasks, newTask]);
