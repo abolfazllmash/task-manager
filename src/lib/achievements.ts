@@ -64,7 +64,7 @@ export const achievements: Achievement[] = [
     },
     {
         id: 'constant-companion',
-        name: 'یار همیشگی',
+        name: 'لیلی و مجنون',
         description: 'اولین وظیفه "دوتایی" خود را انجام دادید.',
         icon: Heart,
         check: (tasks) => completedTasks(tasks).filter(t => t.type === 'couple').length >= 1,
