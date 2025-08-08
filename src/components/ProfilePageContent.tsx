@@ -1,139 +1,208 @@
-"use client"
-import { TaskProvider, useTaskContext } from '@/components/TaskProvider';
-import TodoList from '@/components/TodoList';
-import { Suspense, useState, useEffect } from 'react';
-import ProgressCircle from '@/components/ProgressCircle';
-import UserLevel from '@/components/UserLevel';
-import Link from 'next/link';
-import { Medal, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
-const quotes = [
-  {
-    text: "چه فکر کنید که می‌توانید، یا فکر کنید که نمی‌توانید - در هر دو صورت حق با شماست.",
-    author: "هنری فورد",
-    image: "هنری-فورد.png"
-  },
-  {
-    text: "زندگی مانند دوچرخه سواری است. برای حفظ تعادل، باید به حرکت ادامه دهید.",
-    author: "آلبرت انیشتین",
-    image: "آلبرت-انیشتین.png"
-  },
-  {
-    text: "بهترین راه برای شروع، دست از حرف زدن برداشتن و شروع به انجام دادن است.",
-    author: "والت دیزنی",
-    image: "والت-دیزنی.png"
-  },
-  {
-    text: "همیشه تا زمانی که کاری انجام نشده، غیرممکن به نظر می‌رسد.",
-    author: "نلسون ماندلا",
-    image: "نلسون-ماندلا.png"
-  },
-  {
-    text: "فرقی نمی‌کند چقدر آهسته حرکت می‌کنید، تا زمانی که متوقف نشوید.",
-    author: "کنفسیوس",
-    image: "کنفسیوس.png"
-  },
-  {
-    text: "من در مسیرم بارها و بارها شکست خورده‌ام و به همین دلیل است که موفق می‌شوم.",
-    author: "مایکل جردن",
-    image: "مایکل-جردن.png"
-  },
-  {
-    text: "کسانی که می‌گویند کاری نمی‌تواند انجام شود، نباید مزاحم کسانی شوند که در حال انجام آن هستند.",
-    author: "جرج برنارد شاو",
-    image: "جرج-برنارد-شاو.png"
-  }
+"use client"
+
+import { useTaskContext } from './TaskProvider';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Button } from './ui/button';
+import { Award, Medal, PieChart as PieChartIcon, User, Shield, Star, Swords, Zap } from 'lucide-react';
+import { achievements } from '@/lib/achievements';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import type { TaskType } from '@/lib/types';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+const levels = [
+    { name: "تازه‌کار", icon: Award, threshold: 0 },
+    { name: "راسخ", icon: Zap, threshold: 21 },
+    { name: "نینجا", icon: Star, threshold: 51 },
+    { name: "سامورایی", icon: Swords, threshold: 101 },
+    { name: "شوالیه", icon: Shield, threshold: 221 },
 ];
 
-function RandomQuote() {
-  const [quote, setQuote] = useState<(typeof quotes)[number] | null>(null);
-
-  useEffect(() => {
-    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-  }, []);
-
-  if (!quote) {
-    return null;
-  }
-
-  return (
-    <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
-       <div className="relative w-[100px] h-[100px] flex-shrink-0">
-         <img 
-            src={`/authors/${quote.image}`}
-            alt={quote.author} 
-            className="rounded-lg object-cover w-full h-full"
-            data-ai-hint={quote.author.split(' ').join(' ').toLowerCase()}
-         />
-       </div>
-      <blockquote className="border-r-4 border-primary pr-4">
-        <p className="text-lg italic">"{quote.text}"</p>
-        <cite className="block text-right mt-2 not-italic text-muted-foreground">- {quote.author}</cite>
-      </blockquote>
-    </div>
-  );
+function getUserLevel(completedTasks: number) {
+    for (let i = levels.length - 1; i >= 0; i--) {
+        if (completedTasks >= levels[i].threshold) {
+            return levels[i];
+        }
+    }
+    return levels[0];
 }
 
+const ACHIEVEMENTS_STORAGE_KEY = 'offline-task-manager-achievements';
 
-function TasksPageContent() {
-  const { tasks } = useTaskContext();
-
-  const completedTasks = tasks.filter(task => task.completed).length;
-  const totalTasks = tasks.length;
-  const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-
-  return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="py-8 px-4">
-        <div className="container mx-auto flex items-center justify-between">
-            <div className="w-1/3 flex justify-start items-center gap-4">
-                 <Link href="/stats" className="cursor-pointer flex flex-col items-center text-center gap-1">
-                    <UserLevel completedTasks={completedTasks} />
-                 </Link>
-                  <Button asChild variant="ghost" size="icon" className="h-auto w-auto group flex-col">
-                     <Link href="/achievements" className="flex flex-col items-center gap-1">
-                        <div className="h-12 w-12 flex items-center justify-center">
-                            <Medal className="h-10 w-10 text-primary group-hover:animate-pulse" />
-                        </div>
-                        <span className="text-xs text-muted-foreground">مدال‌ها</span>
-                     </Link>
-                  </Button>
-                   <Link href="/progress" className="cursor-pointer flex flex-col items-center text-center gap-1">
-                    <div className="flex flex-col items-center gap-2">
-                        <ProgressCircle progress={progressPercentage} size={48} strokeWidth={4} />
-                    </div>
-                     <span className="text-xs text-muted-foreground">پیشرفت</span>
-                  </Link>
-            </div>
-            
-            <div className="w-1/3 text-center">
-                <h1 className="text-5xl font-bold text-primary">کار و بار</h1>
-                <p className="text-muted-foreground mt-2">مدیریت کارها و وظایف</p>
-            </div>
-
-            <div className="w-1/3 flex justify-end">
-                
-            </div>
-        </div>
-      </header>
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <TodoList />
-          <RandomQuote />
-        </div>
-      </main>
-    </div>
-  );
+function getEarnedAchievementIds(): string[] {
+    if (typeof window === 'undefined') return [];
+    try {
+        const stored = localStorage.getItem(ACHIEVEMENTS_STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+    } catch (e) {
+        console.error("Failed to parse achievements from localStorage", e);
+    }
+    return [];
 }
 
-export default function Home() {
+const COLORS: Record<TaskType, string> = {
+    personal: '#3b82f6',
+    work: '#ef4444',
+    home: '#22c55e',
+    study: '#f97316',
+    club: '#8b5cf6',
+    couple: '#ec4899',
+};
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    if (percent * 100 < 5) return null;
+
     return (
-      <Suspense fallback={<div className="flex h-screen w-full items-center justify-center">در حال بارگذاری مدیر وظایف...</div>}>
-        <TaskProvider>
-            <TasksPageContent />
-        </TaskProvider>
-      </Suspense>
+        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central">
+            {`${(percent * 100).toFixed(0)}%`}
+        </text>
+    );
+};
+
+export default function ProfilePageContent() {
+    const { tasks } = useTaskContext();
+    const [earnedIds, setEarnedIds] = useState<Set<string>>(new Set());
+    
+    useEffect(() => {
+        setEarnedIds(new Set(getEarnedAchievementIds()));
+    }, [tasks]); 
+
+    const completedTasks = tasks.filter(t => t.completed);
+    const completedTasksCount = completedTasks.length;
+    const currentLevel = getUserLevel(completedTasksCount);
+    
+    const earnedCount = earnedIds.size;
+    const totalCount = achievements.length;
+    const lastThreeEarned = achievements.filter(a => earnedIds.has(a.id)).slice(-3);
+    
+    const taskTypeCounts = completedTasks.reduce((acc, task) => {
+        acc[task.type] = (acc[task.type] || 0) + 1;
+        return acc;
+    }, {} as Record<TaskType, number>);
+
+    const chartData = Object.entries(taskTypeCounts).map(([name, value]) => ({
+        name: name as TaskType,
+        value,
+        fill: COLORS[name as TaskType],
+    }));
+
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            <div className="md:col-span-1 space-y-8">
+                 <Card>
+                    <CardHeader className="flex flex-row items-center gap-3">
+                         <User className="h-8 w-8 text-primary" />
+                        <CardTitle>اطلاعات کاربری</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="name">نام</Label>
+                            <Input id="name" placeholder="نام خود را وارد کنید" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>جنسیت</Label>
+                            <RadioGroup defaultValue="none" className="flex gap-4 pt-2">
+                                <div className="flex items-center space-x-2 space-x-reverse">
+                                    <RadioGroupItem value="male" id="male" />
+                                    <Label htmlFor="male">مرد</Label>
+                                </div>
+                                <div className="flex items-center space-x-2 space-x-reverse">
+                                    <RadioGroupItem value="female" id="female" />
+                                    <Label htmlFor="female">زن</Label>
+                                </div>
+                                <div className="flex items-center space-x-2 space-x-reverse">
+                                    <RadioGroupItem value="none" id="none" />
+                                    <Label htmlFor="none">نامشخص</Label>
+                                </div>
+                            </RadioGroup>
+                        </div>
+                         <Button className="w-full">ذخیره تغییرات</Button>
+                    </CardContent>
+                </Card>
+
+            </div>
+            <div className="md:col-span-2 space-y-8">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <Card>
+                        <CardHeader className="items-center text-center">
+                            <currentLevel.icon className="h-20 w-20 p-3 rounded-full bg-card shadow-lg text-primary" />
+                            <CardTitle className="text-2xl pt-2">{currentLevel.name}</CardTitle>
+                            <CardDescription>{completedTasksCount} وظیفه انجام شده</CardDescription>
+                        </CardHeader>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="items-center text-center">
+                            <Medal className="h-20 w-20 p-3 rounded-full bg-card shadow-lg text-primary" />
+                            <CardTitle className="text-2xl pt-2">
+                                {earnedCount} / {totalCount} مدال
+                            </CardTitle>
+                            <CardDescription>آخرین مدال‌های شما</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex justify-center items-center gap-4">
+                            {lastThreeEarned.map(ach => (
+                                <div key={ach.id} className="flex flex-col items-center gap-1">
+                                    <ach.icon className="h-8 w-8 text-primary/80" />
+                                    <span className="text-xs text-muted-foreground">{ach.name}</span>
+                                </div>
+                            ))}
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href="/achievements">همه مدال‌ها</Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                           <PieChartIcon className="h-6 w-6" />
+                           تفکیک وظایف انجام شده
+                        </CardTitle>
+                        <CardDescription>نگاهی به حوزه‌هایی که روی آن‌ها تمرکز داشته‌اید.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {chartData.length > 0 ? (
+                            <ChartContainer config={{}} className="mx-auto aspect-square h-[250px]">
+                                <PieChart>
+                                    <Tooltip
+                                        cursor={false}
+                                        content={<ChartTooltipContent hideLabel />}
+                                    />
+                                    <Pie
+                                        data={chartData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={100}
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                    >
+                                        {chartData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ChartContainer>
+                        ) : (
+                            <div className="flex items-center justify-center h-[250px] text-muted-foreground">
+                                هنوز وظیفه انجام شده‌ای برای نمایش وجود ندارد.
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
     );
 }

@@ -89,23 +89,12 @@ function TasksPageContent() {
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
             <div className="w-1/3 flex justify-start items-center gap-4">
-                 <Link href="/stats" className="cursor-pointer flex flex-col items-center text-center gap-1">
-                    <UserLevel completedTasks={completedTasks} />
-                 </Link>
-                  <Button asChild variant="ghost" size="icon" className="h-auto w-auto group flex-col">
-                     <Link href="/achievements" className="flex flex-col items-center gap-1">
-                        <div className="h-12 w-12 flex items-center justify-center">
-                            <Medal className="h-10 w-10 text-primary group-hover:animate-pulse" />
-                        </div>
-                        <span className="text-xs text-muted-foreground">مدال‌ها</span>
-                     </Link>
-                  </Button>
-                   <Link href="/progress" className="cursor-pointer flex flex-col items-center text-center gap-1">
-                    <div className="flex flex-col items-center gap-2">
-                        <ProgressCircle progress={progressPercentage} size={48} strokeWidth={4} />
+                 <Link href="/profile" className="cursor-pointer flex flex-col items-center text-center gap-1">
+                    <div className="h-12 w-12 flex items-center justify-center">
+                        <User className="h-10 w-10 text-primary" />
                     </div>
-                     <span className="text-xs text-muted-foreground">پیشرفت</span>
-                  </Link>
+                    <span className="text-xs text-muted-foreground">پروفایل</span>
+                 </Link>
             </div>
             
             <div className="w-1/3 text-center">
@@ -113,8 +102,24 @@ function TasksPageContent() {
                 <p className="text-muted-foreground mt-2">مدیریت کارها و وظایف</p>
             </div>
 
-            <div className="w-1/3 flex justify-end">
-                
+            <div className="w-1/3 flex justify-end items-center gap-4">
+                <Link href="/stats" className="cursor-pointer flex flex-col items-center text-center gap-1">
+                    <UserLevel completedTasks={completedTasks} />
+                </Link>
+                <Button asChild variant="ghost" size="icon" className="h-auto w-auto group flex-col">
+                    <Link href="/achievements" className="flex flex-col items-center gap-1">
+                        <div className="h-12 w-12 flex items-center justify-center">
+                            <Medal className="h-10 w-10 text-primary group-hover:animate-pulse" />
+                        </div>
+                        <span className="text-xs text-muted-foreground">مدال‌ها</span>
+                    </Link>
+                </Button>
+                <Link href="/progress" className="cursor-pointer flex flex-col items-center text-center gap-1">
+                    <div className="flex flex-col items-center gap-2 h-12 w-12 justify-center">
+                        <ProgressCircle progress={progressPercentage} size={40} strokeWidth={4} />
+                    </div>
+                    <span className="text-xs text-muted-foreground">پیشرفت</span>
+                </Link>
             </div>
         </div>
       </header>
