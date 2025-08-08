@@ -13,37 +13,37 @@ const quotes = [
   {
     text: "چه فکر کنید که می‌توانید، یا فکر کنید که نمی‌توانید - در هر دو صورت حق با شماست.",
     author: "هنری فورد",
-    image: "هنری-فورد.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "زندگی مانند دوچرخه سواری است. برای حفظ تعادل، باید به حرکت ادامه دهید.",
     author: "آلبرت انیشتین",
-    image: "آلبرت-انیشتین.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "بهترین راه برای شروع، دست از حرف زدن برداشتن و شروع به انجام دادن است.",
     author: "والت دیزنی",
-    image: "والت-دیزنی.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "همیشه تا زمانی که کاری انجام نشده، غیرممکن به نظر می‌رسد.",
     author: "نلسون ماندلا",
-    image: "نلسون-ماندلا.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "فرقی نمی‌کند چقدر آهسته حرکت می‌کنید، تا زمانی که متوقف نشوید.",
     author: "کنفسیوس",
-    image: "کنفسیوس.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "من در مسیرم بارها و بارها شکست خورده‌ام و به همین دلیل است که موفق می‌شوم.",
     author: "مایکل جردن",
-    image: "مایکل-جردن.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "کسانی که می‌گویند کاری نمی‌تواند انجام شود، نباید مزاحم کسانی شوند که در حال انجام آن هستند.",
     author: "جرج برنارد شاو",
-    image: "جرج-برنارد-شاو.png"
+    image: "https://placehold.co/100x100.png"
   }
 ];
 
@@ -62,7 +62,7 @@ function RandomQuote() {
     <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
        <div className="relative w-[100px] h-[100px] flex-shrink-0">
          <img 
-            src={`/authors/${quote.image}`}
+            src={quote.image}
             alt={quote.author} 
             className="rounded-lg object-cover w-full h-full"
             data-ai-hint={quote.author.split(' ').join(' ').toLowerCase()}
