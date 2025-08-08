@@ -49,47 +49,47 @@
   }
 
   .theme-steadfast {
-    --background: 210 40% 96%;
-    --foreground: 215 28% 17%;
-    --card: 210 40% 100%;
-    --card-foreground: 215 28% 17%;
-    --popover: 210 40% 100%;
-    --popover-foreground: 215 28% 17%;
-    --primary: 142 76% 36%;
-    --primary-foreground: 355 100% 97%;
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 215 16% 47%;
-    --muted: 210 40% 98%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 94%;
-    --accent-foreground: 215 20% 31%;
+    --background: 120 25% 96%;
+    --foreground: 125 20% 15%;
+    --card: 120 25% 100%;
+    --card-foreground: 125 20% 15%;
+    --popover: 120 25% 100%;
+    --popover-foreground: 125 20% 15%;
+    --primary: 130 65% 40%;
+    --primary-foreground: 130 100% 98%;
+    --secondary: 120 25% 98%;
+    --secondary-foreground: 125 10% 45%;
+    --muted: 120 25% 98%;
+    --muted-foreground: 125 10% 45%;
+    --accent: 120 25% 94%;
+    --accent-foreground: 125 15% 30%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 142 76% 36%;
+    --border: 120 22% 91%;
+    --input: 120 22% 91%;
+    --ring: 130 65% 40%;
   }
 
   .dark .theme-steadfast {
-    --background: 202 30% 12%;
-    --foreground: 210 40% 98%;
-    --card: 202 30% 15%;
-    --card-foreground: 210 40% 98%;
-    --popover: 202 30% 15%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 142 71% 45%;
-    --primary-foreground: 142 80% 98%;
-    --secondary: 202 30% 25%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 202 30% 25%;
-    --muted-foreground: 215 25% 65%;
-    --accent: 202 30% 29%;
-    --accent-foreground: 210 40% 98%;
+    --background: 125 20% 12%;
+    --foreground: 120 25% 98%;
+    --card: 125 20% 15%;
+    --card-foreground: 120 25% 98%;
+    --popover: 125 20% 15%;
+    --popover-foreground: 120 25% 98%;
+    --primary: 130 60% 50%;
+    --primary-foreground: 130 70% 98%;
+    --secondary: 125 20% 25%;
+    --secondary-foreground: 120 25% 98%;
+    --muted: 125 20% 25%;
+    --muted-foreground: 125 20% 65%;
+    --accent: 125 20% 29%;
+    --accent-foreground: 120 25% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 202 30% 29%;
-    --input: 202 30% 29%;
-    --ring: 142 71% 45%;
+    --border: 125 20% 29%;
+    --input: 125 20% 29%;
+    --ring: 130 60% 50%;
   }
   
   .theme-ninja {
