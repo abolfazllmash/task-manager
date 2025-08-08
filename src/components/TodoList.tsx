@@ -43,7 +43,7 @@ function AddTaskForm({ parentId }: { parentId?: string }) {
 
     const handleAddTask = (data: z.infer<typeof taskSchema>) => {
         addTask(data.title, undefined, data.type, parentId);
-        form.reset({ title: "", type: 'personal' });
+        form.reset({ title: "", type: data.type });
     };
 
     return (
