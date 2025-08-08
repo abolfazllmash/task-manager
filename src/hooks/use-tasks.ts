@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Task, TaskType } from '@/lib/types';
 
 const TASKS_STORAGE_KEY = 'offline-task-manager-tasks';
-const TASKS_LAST_CLEANUP_KEY = 'offline-task-manager-last-cleanup';
 
 export function useTasks() {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -12,33 +11,13 @@ export function useTasks() {
 
     useEffect(() => {
         try {
-            const lastCleanupStr = localStorage.getItem(TASKS_LAST_CLEANUP_KEY);
-            const now = Date.now();
-            const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-
-            if (lastCleanupStr) {
-                const lastCleanup = parseInt(lastCleanupStr, 10);
-                if (now - lastCleanup > oneMonthInMs) {
-                    localStorage.removeItem(TASKS_STORAGE_KEY);
-                    localStorage.setItem(TASKS_LAST_CLEANUP_KEY, now.toString());
-                    setTasks([]);
-                } else {
-                    const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
-                     if (storedTasks) {
-                        const parsedTasks: Task[] = JSON.parse(storedTasks);
-                        setTasks(parsedTasks);
-                    }
-                }
-            } else {
-                localStorage.setItem(TASKS_LAST_CLEANUP_KEY, now.toString());
-                const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
-                if (storedTasks) {
-                    const parsedTasks: Task[] = JSON.parse(storedTasks);
-                    setTasks(parsedTasks);
-                }
+            const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+            if (storedTasks) {
+                const parsedTasks: Task[] = JSON.parse(storedTasks);
+                setTasks(parsedTasks);
             }
         } catch (error) {
-            console.error("Failed to load or clean up tasks from local storage", error);
+            console.error("Failed to load tasks from local storage", error);
         } finally {
             setIsLoading(false);
         }
