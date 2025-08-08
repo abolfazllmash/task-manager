@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import type { Task } from '@/lib/types';
-import { achievements, type Achievement } from '@/lib/achievements';
+import type { Task, Stats } from '@/lib/types';
+import { achievements } from '@/lib/achievements';
 import { useToast } from './use-toast';
-import { Award, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 const ACHIEVEMENTS_STORAGE_KEY = 'offline-task-manager-achievements';
 
@@ -29,21 +29,21 @@ function saveEarnedAchievements(earned: string[]): void {
     localStorage.setItem(ACHIEVEMENTS_STORAGE_KEY, JSON.stringify(earned));
 }
 
-export function useAchievements(tasks: Task[]) {
+export function useAchievements(tasks: Task[], stats: Stats) {
     const { toast } = useToast();
-    const prevTasksRef = useRef<Task[]>(tasks);
+    const prevStatsRef = useRef<Stats>(stats);
     
     useEffect(() => {
-        const completedTasks = tasks.filter(t => t.completed);
-        const prevCompletedTasks = prevTasksRef.current.filter(t => t.completed);
-
-        if (completedTasks.length > prevCompletedTasks.length) {
+        // We check for new achievements when the total completed count increases.
+        if (stats.totalCompletedCount > prevStatsRef.current.totalCompletedCount) {
             const earnedAchievementIds = getEarnedAchievements();
             const earnedAchievements = new Set(earnedAchievementIds);
+            let newAchievementEarned = false;
 
             achievements.forEach(achievement => {
-                if (!earnedAchievements.has(achievement.id) && achievement.check(tasks)) {
+                if (!earnedAchievements.has(achievement.id) && achievement.check(tasks, stats)) {
                     earnedAchievements.add(achievement.id);
+                    newAchievementEarned = true;
                     toast({
                         title: (
                             <div className="flex items-center gap-2 font-bold">
@@ -63,9 +63,12 @@ export function useAchievements(tasks: Task[]) {
                     });
                 }
             });
-            saveEarnedAchievements(Array.from(earnedAchievements));
+            
+            if (newAchievementEarned) {
+                saveEarnedAchievements(Array.from(earnedAchievements));
+            }
         }
 
-        prevTasksRef.current = tasks;
-    }, [tasks, toast]);
+        prevStatsRef.current = stats;
+    }, [stats, tasks, toast]);
 }

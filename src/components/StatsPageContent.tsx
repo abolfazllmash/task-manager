@@ -24,8 +24,8 @@ function getUserLevel(completedTasks: number) {
 }
 
 export default function StatsPageContent() {
-    const { tasks } = useTaskContext();
-    const completedTasksCount = tasks.filter(task => task.completed).length;
+    const { stats } = useTaskContext();
+    const completedTasksCount = stats.totalCompletedCount;
     const currentLevel = getUserLevel(completedTasksCount);
     const nextLevelIndex = levels.findIndex(l => l.name === currentLevel.name) + 1;
     const nextLevel = nextLevelIndex < levels.length ? levels[nextLevelIndex] : null;

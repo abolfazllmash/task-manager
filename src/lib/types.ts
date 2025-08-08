@@ -11,4 +11,9 @@ export type Task = {
   dueDate?: string;
   type: TaskType;
   parentId?: string;
+  completedAt?: number;
+};
+
+export type Stats = {
+  totalCompletedCount: number;
 };

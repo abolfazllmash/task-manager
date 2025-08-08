@@ -70,15 +70,15 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 export default function ProfilePageContent() {
-    const { tasks } = useTaskContext();
+    const { tasks, stats } = useTaskContext();
     const [earnedIds, setEarnedIds] = useState<Set<string>>(new Set());
     
     useEffect(() => {
         setEarnedIds(new Set(getEarnedAchievementIds()));
-    }, [tasks]); 
+    }, [tasks]); // It's okay for this to depend on tasks to re-check on new achievements
 
     const completedTasks = tasks.filter(t => t.completed);
-    const completedTasksCount = completedTasks.length;
+    const completedTasksCount = stats.totalCompletedCount;
     const currentLevel = getUserLevel(completedTasksCount);
     
     const earnedCount = earnedIds.size;

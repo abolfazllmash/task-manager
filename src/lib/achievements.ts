@@ -1,4 +1,4 @@
-import type { Task, TaskType } from './types';
+import type { Task, Stats } from './types';
 import {
     Footprints,
     CalendarCheck,
@@ -24,7 +24,7 @@ export interface Achievement {
     name: string;
     description: string;
     icon: LucideIcon;
-    check: (tasks: Task[]) => boolean;
+    check: (tasks: Task[], stats: Stats) => boolean;
 }
 
 const completedTasks = (tasks: Task[]) => tasks.filter(t => t.completed);
@@ -36,7 +36,7 @@ export const achievements: Achievement[] = [
         name: 'اراده',
         description: 'اولین وظیفه‌تان را با موفقیت انجام دادید.',
         icon: Footprints,
-        check: (tasks) => completedTasks(tasks).length >= 1,
+        check: (tasks, stats) => stats.totalCompletedCount >= 1,
     },
     {
         id: 'consistency',
@@ -130,13 +130,13 @@ export const achievements: Achievement[] = [
         name: 'وظیفه‌شکن',
         description: '۱۰ وظیفه را با موفقیت به پایان رساندید.',
         icon: Zap,
-        check: (tasks) => completedTasks(tasks).length >= 10,
+        check: (tasks, stats) => stats.totalCompletedCount >= 10,
     },
     {
         id: 'task-champion-50',
         name: 'قهرمان وظایف',
         description: '۵۰ وظیفه را با موفقیت به پایان رساندید.',
         icon: Crown,
-        check: (tasks) => completedTasks(tasks).length >= 50,
+        check: (tasks, stats) => stats.totalCompletedCount >= 50,
     },
 ];

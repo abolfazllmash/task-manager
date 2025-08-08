@@ -81,7 +81,7 @@ function RandomQuote() {
 
 
 function TasksPageContent() {
-  const { tasks } = useTaskContext();
+  const { tasks, stats } = useTaskContext();
 
   const completedTasks = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
@@ -107,7 +107,7 @@ function TasksPageContent() {
 
             <div className="w-1/3 flex justify-end items-center gap-4">
                 <Link href="/stats" className="cursor-pointer flex flex-col items-center text-center gap-1">
-                    <UserLevel completedTasks={completedTasks} />
+                    <UserLevel completedTasks={stats.totalCompletedCount} />
                 </Link>
                 <Button asChild variant="ghost" size="icon" className="h-auto w-auto group flex-col">
                     <Link href="/achievements" className="flex flex-col items-center gap-1">

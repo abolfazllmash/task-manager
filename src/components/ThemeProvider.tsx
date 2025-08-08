@@ -22,23 +22,25 @@ function getThemeName(completedTasks: number): string {
 
 
 function ThemeUpdater() {
-    const { tasks } = useTaskContext();
-    const completedTasks = tasks.filter(t => t.completed).length;
+    const { stats } = useTaskContext();
+    const completedTasksCount = stats.totalCompletedCount;
 
     useEffect(() => {
-        const themeName = getThemeName(completedTasks);
+        const themeName = getThemeName(completedTasksCount);
         const classList = document.documentElement.classList;
-        for (let i = classList.length - 1; i >= 0; i--) {
-            if (classList[i].startsWith('theme-')) {
-                classList.remove(classList[i]);
-            }
+        
+        const themeClasses = Array.from(classList).filter(c => c.startsWith('theme-'));
+        if (themeClasses.length > 0) {
+            classList.remove(...themeClasses);
         }
+        
         classList.add(themeName);
-    }, [completedTasks]);
+    }, [completedTasksCount]);
 
     return null;
 }
 
+// This is the main ThemeProvider that should wrap the application in layout.tsx
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return (
         <TaskProvider>

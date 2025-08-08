@@ -1,23 +1,28 @@
 "use client";
 
-import React, { createContext, useContext } from 'react';
-import { useTasks } from '@/hooks/use-tasks';
+import React, { createContext, useContext, useMemo } from 'react';
+import { useTasks, type UseTasksReturnType } from '@/hooks/use-tasks';
 import { useAchievements } from '@/hooks/use-achievements';
 
-type TaskContextType = ReturnType<typeof useTasks>;
+type TaskContextType = UseTasksReturnType;
 
 const TaskContext = createContext<TaskContextType | null>(null);
 
 function AchievementsManager() {
-    const tasks = useTasks();
-    useAchievements(tasks.tasks);
+    const { tasks, stats } = useTaskContext();
+    useAchievements(tasks, stats);
     return null;
 }
 
 export function TaskProvider({ children }: { children: React.ReactNode }) {
     const taskValue = useTasks();
+    
+    const contextValue = useMemo(() => {
+        return taskValue;
+    }, [taskValue]);
+
     return (
-        <TaskContext.Provider value={taskValue}>
+        <TaskContext.Provider value={contextValue}>
             <AchievementsManager />
             {children}
         </TaskContext.Provider>
