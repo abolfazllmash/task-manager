@@ -6,6 +6,8 @@ import { Suspense, useState, useEffect } from 'react';
 import ProgressCircle from '@/components/ProgressCircle';
 import UserLevel from '@/components/UserLevel';
 import Link from 'next/link';
+import { Medal } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const quotes = [
   {
@@ -86,10 +88,16 @@ function TasksPageContent() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
-            <div className="w-1/3 flex justify-start">
+            <div className="w-1/3 flex justify-start items-center gap-4">
                  <Link href="/stats" className="cursor-pointer">
                     <UserLevel completedTasks={completedTasks} />
                  </Link>
+                  <Button asChild variant="ghost" size="icon" className="h-14 w-14 group">
+                     <Link href="/achievements" className="flex flex-col items-center gap-1">
+                        <Medal className="h-8 w-8 text-primary group-hover:animate-pulse" />
+                        <span className="text-xs text-muted-foreground">مدال‌ها</span>
+                     </Link>
+                  </Button>
             </div>
             
             <div className="w-1/3 text-center">
