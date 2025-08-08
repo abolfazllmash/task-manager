@@ -114,14 +114,7 @@ function TasksPageContent() {
             </div>
 
             <div className="w-1/3 flex justify-end">
-                <Button asChild variant="ghost" size="icon" className="h-auto w-auto group flex-col">
-                     <Link href="/profile" className="flex flex-col items-center gap-1">
-                        <div className="h-12 w-12 flex items-center justify-center">
-                           <User className="h-8 w-8 text-primary group-hover:animate-pulse" />
-                        </div>
-                        <span className="text-xs text-muted-foreground">پروفایل</span>
-                     </Link>
-                </Button>
+                
             </div>
         </div>
       </header>
