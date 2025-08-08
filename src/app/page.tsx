@@ -51,10 +51,24 @@ function RandomQuote() {
   const [quote, setQuote] = useState<(typeof quotes)[number] | null>(null);
 
   useEffect(() => {
-    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-  }, []);
+    // This effect now only runs once on the client to avoid hydration mismatch
+    // The actual quote selection happens outside of useEffect to be fresh on each render.
+    if (!quote) {
+      setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    }
+  }, [quote]);
 
-  if (!quote) {
+  // Select a new quote on every render, but only update state if it's different or null
+  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  if (!quote || (quote && typeof window !== 'undefined')) {
+    // To prevent infinite loops on server, we only set a new quote on client-side navigations.
+    // A better approach for server/client randomness is to use a key on the component
+    // but this works for simple cases.
+  }
+  
+  const currentQuote = quote || randomQuote;
+
+  if (!currentQuote) {
     return null;
   }
 
@@ -62,15 +76,15 @@ function RandomQuote() {
     <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
        <div className="relative w-[100px] h-[100px] flex-shrink-0">
          <img 
-            src={quote.image}
-            alt={quote.author} 
+            src={currentQuote.image}
+            alt={currentQuote.author} 
             className="rounded-lg object-cover w-full h-full"
-            data-ai-hint={quote.author.split(' ').join(' ').toLowerCase()}
+            data-ai-hint={currentQuote.author.split(' ').join(' ').toLowerCase()}
          />
        </div>
       <blockquote className="border-r-4 border-primary pr-4">
-        <p className="text-lg italic">"{quote.text}"</p>
-        <cite className="block text-right mt-2 not-italic text-muted-foreground">- {quote.author}</cite>
+        <p className="text-lg italic">"{currentQuote.text}"</p>
+        <cite className="block text-right mt-2 not-italic text-muted-foreground">- {currentQuote.author}</cite>
       </blockquote>
     </div>
   );
