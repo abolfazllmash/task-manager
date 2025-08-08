@@ -1,43 +1,50 @@
+
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import type { Task, TaskType } from '@/lib/types';
+import type { Task, TaskType, Stats } from '@/lib/types';
 
 const TASKS_STORAGE_KEY = 'offline-task-manager-tasks';
-const TASKS_LAST_CLEANUP_KEY = 'offline-task-manager-last-cleanup';
+const STATS_STORAGE_KEY = 'offline-task-manager-stats';
+const LAST_CLEANUP_STORAGE_KEY = 'offline-task-manager-last-cleanup';
+
+const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
+
+export type UseTasksReturnType = ReturnType<typeof useTasks>;
 
 export function useTasks() {
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [stats, setStats] = useState<Stats>({ totalCompletedCount: 0 });
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         try {
-            const lastCleanupStr = localStorage.getItem(TASKS_LAST_CLEANUP_KEY);
-            const now = Date.now();
-            const oneMonthInMs = 30 * 24 * 60 * 60 * 1000;
-
-            if (lastCleanupStr) {
-                const lastCleanup = parseInt(lastCleanupStr, 10);
-                if (now - lastCleanup > oneMonthInMs) {
-                    localStorage.removeItem(TASKS_STORAGE_KEY);
-                    localStorage.setItem(TASKS_LAST_CLEANUP_KEY, now.toString());
-                    setTasks([]);
-                } else {
-                    const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
-                     if (storedTasks) {
-                        const parsedTasks: Task[] = JSON.parse(storedTasks);
-                        setTasks(parsedTasks.sort((a, b) => b.updatedAt - a.updatedAt));
-                    }
-                }
-            } else {
-                localStorage.setItem(TASKS_LAST_CLEANUP_KEY, now.toString());
-                const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
-                if (storedTasks) {
-                    const parsedTasks: Task[] = JSON.parse(storedTasks);
-                    setTasks(parsedTasks.sort((a, b) => b.updatedAt - a.updatedAt));
-                }
+            // Load tasks
+            const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+            if (storedTasks) {
+                setTasks(JSON.parse(storedTasks));
             }
+
+            // Load stats
+            const storedStats = localStorage.getItem(STATS_STORAGE_KEY);
+            if (storedStats) {
+                setStats(JSON.parse(storedStats));
+            }
+
+            // Cleanup old tasks
+            const lastCleanup = localStorage.getItem(LAST_CLEANUP_STORAGE_KEY);
+            const now = Date.now();
+            if (!lastCleanup || (now - parseInt(lastCleanup, 10)) > THIRTY_DAYS_IN_MS) {
+                 setTasks(prevTasks => prevTasks.filter(task => {
+                    if (task.completed && task.completedAt) {
+                        return (now - task.completedAt) < THIRTY_DAYS_IN_MS;
+                    }
+                    return true;
+                }));
+                localStorage.setItem(LAST_CLEANUP_STORAGE_KEY, now.toString());
+            }
+
         } catch (error) {
-            console.error("Failed to load or clean up tasks from local storage", error);
+            console.error("Failed to load data from local storage", error);
         } finally {
             setIsLoading(false);
         }
@@ -47,13 +54,14 @@ export function useTasks() {
         if (!isLoading) {
             try {
                 localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+                localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(stats));
             } catch (error) {
                 console.error("Failed to save tasks to local storage", error);
             }
         }
-    }, [tasks, isLoading]);
+    }, [tasks, stats, isLoading]);
 
-    const addTask = useCallback((title: string, dueDate?: Date, type: TaskType = 'personal') => {
+    const addTask = useCallback((title: string, dueDate?: Date, type: TaskType = 'personal', parentId?: string) => {
         if (!title.trim()) return;
         const newTask: Task = {
             id: crypto.randomUUID(),
@@ -63,9 +71,10 @@ export function useTasks() {
             createdAt: Date.now(),
             updatedAt: Date.now(),
             dueDate: dueDate?.toISOString(),
-            type: type,
+            type,
+            parentId,
         };
-        setTasks(prevTasks => [newTask, ...prevTasks]);
+        setTasks(prevTasks => [...prevTasks, newTask]);
         return newTask;
     }, []);
 
@@ -78,15 +87,105 @@ export function useTasks() {
     }, []);
     
     const toggleTaskCompletion = useCallback((id: string) => {
-        setTasks(prevTasks =>
-            prevTasks.map(task =>
-                task.id === id ? { ...task, completed: !task.completed, updatedAt: Date.now() } : task
-            )
-        );
+        let wasJustCompleted = false;
+
+        setTasks(prevTasks => {
+            const tasksCopy = prevTasks.map(t => ({...t}));
+            const task = tasksCopy.find(t => t.id === id);
+            if (!task) return prevTasks;
+    
+            const newCompletedState = !task.completed;
+            
+            if (newCompletedState && !task.completed) {
+                wasJustCompleted = true;
+            }
+
+            task.completed = newCompletedState;
+            task.updatedAt = Date.now();
+            if (newCompletedState) {
+                task.completedAt = Date.now();
+            } else {
+                task.completedAt = undefined;
+            }
+    
+            if (!task.parentId) {
+                tasksCopy.forEach(child => {
+                    if (child.parentId === id) {
+                        child.completed = newCompletedState;
+                        child.updatedAt = Date.now();
+                        if (newCompletedState) child.completedAt = Date.now();
+                        else child.completedAt = undefined;
+                    }
+                });
+            } else {
+                const parent = tasksCopy.find(p => p.id === task.parentId);
+                if (parent) {
+                    const siblings = tasksCopy.filter(s => s.parentId === parent.id);
+                    const allSiblingsCompleted = siblings.every(s => s.completed);
+                    
+                    if (parent.completed !== allSiblingsCompleted) {
+                       parent.completed = allSiblingsCompleted;
+                       parent.updatedAt = Date.now();
+                       if (allSiblingsCompleted) parent.completedAt = Date.now();
+                       else parent.completedAt = undefined;
+                    }
+                }
+            }
+
+            if (wasJustCompleted) {
+                 setStats(prevStats => ({
+                    ...prevStats,
+                    totalCompletedCount: prevStats.totalCompletedCount + 1,
+                }));
+            } else if (!newCompletedState) {
+                // If a task is un-completed, decrement the count.
+                // This is a simplification; a more complex system might prevent this.
+                setStats(prevStats => ({
+                    ...prevStats,
+                    totalCompletedCount: Math.max(0, prevStats.totalCompletedCount - 1),
+                }));
+            }
+    
+            return tasksCopy;
+        });
     }, []);
 
     const deleteTask = useCallback((id: string) => {
-        setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+        setTasks(prevTasks => {
+            const taskToDelete = prevTasks.find(t => t.id === id);
+            if (!taskToDelete) return prevTasks;
+
+            const idsToDelete = new Set([id]);
+            const tasksToKeep = [];
+
+            if (!taskToDelete.parentId) {
+                 prevTasks.forEach(t => {
+                    if (t.parentId === id) {
+                        idsToDelete.add(t.id);
+                    }
+                });
+            }
+
+            let completedTasksDeletedCount = 0;
+            for (const task of prevTasks) {
+                if (idsToDelete.has(task.id)) {
+                    if (task.completed) {
+                        completedTasksDeletedCount++;
+                    }
+                } else {
+                    tasksToKeep.push(task);
+                }
+            }
+
+            if (completedTasksDeletedCount > 0) {
+                 setStats(prevStats => ({
+                    ...prevStats,
+                    totalCompletedCount: Math.max(0, prevStats.totalCompletedCount - completedTasksDeletedCount)
+                }));
+            }
+
+            return tasksToKeep;
+        });
     }, []);
 
 
@@ -95,5 +194,5 @@ export function useTasks() {
         return tasks.find(task => task.id === id) || null;
     }, [tasks]);
 
-    return { tasks, isLoading, addTask, updateTask, deleteTask, getTaskById, toggleTaskCompletion };
+    return { tasks, stats, isLoading, addTask, updateTask, deleteTask, getTaskById, toggleTaskCompletion };
 }

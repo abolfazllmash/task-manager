@@ -6,42 +6,44 @@ import { Suspense, useState, useEffect } from 'react';
 import ProgressCircle from '@/components/ProgressCircle';
 import UserLevel from '@/components/UserLevel';
 import Link from 'next/link';
+import { Medal, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const quotes = [
   {
     text: "چه فکر کنید که می‌توانید، یا فکر کنید که نمی‌توانید - در هر دو صورت حق با شماست.",
     author: "هنری فورد",
-    image: "هنری-فورد.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "زندگی مانند دوچرخه سواری است. برای حفظ تعادل، باید به حرکت ادامه دهید.",
     author: "آلبرت انیشتین",
-    image: "آلبرت-انیشتین.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "بهترین راه برای شروع، دست از حرف زدن برداشتن و شروع به انجام دادن است.",
     author: "والت دیزنی",
-    image: "والت-دیزنی.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "همیشه تا زمانی که کاری انجام نشده، غیرممکن به نظر می‌رسد.",
     author: "نلسون ماندلا",
-    image: "نلسون-ماندلا.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "فرقی نمی‌کند چقدر آهسته حرکت می‌کنید، تا زمانی که متوقف نشوید.",
     author: "کنفسیوس",
-    image: "کنفسیوس.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "من در مسیرم بارها و بارها شکست خورده‌ام و به همین دلیل است که موفق می‌شوم.",
     author: "مایکل جردن",
-    image: "مایکل-جردن.png"
+    image: "https://placehold.co/100x100.png"
   },
   {
     text: "کسانی که می‌گویند کاری نمی‌تواند انجام شود، نباید مزاحم کسانی شوند که در حال انجام آن هستند.",
     author: "جرج برنارد شاو",
-    image: "جرج-برنارد-شاو.png"
+    image: "https://placehold.co/100x100.png"
   }
 ];
 
@@ -49,18 +51,21 @@ function RandomQuote() {
   const [quote, setQuote] = useState<(typeof quotes)[number] | null>(null);
 
   useEffect(() => {
+    // This effect runs only on the client, after the initial render.
+    // This avoids the hydration mismatch error.
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount.
 
   if (!quote) {
-    return null;
+    // Render a placeholder or null on the server and initial client render
+    return <div className="mt-8 p-6 bg-card rounded-lg shadow-sm h-[152px]"></div>;
   }
 
   return (
     <div className="mt-8 p-6 bg-card rounded-lg shadow-sm flex items-center gap-6">
        <div className="relative w-[100px] h-[100px] flex-shrink-0">
          <img 
-            src={`/authors/${quote.image}`}
+            src={quote.image}
             alt={quote.author} 
             className="rounded-lg object-cover w-full h-full"
             data-ai-hint={quote.author.split(' ').join(' ').toLowerCase()}
@@ -76,7 +81,7 @@ function RandomQuote() {
 
 
 function TasksPageContent() {
-  const { tasks } = useTaskContext();
+  const { tasks, stats } = useTaskContext();
 
   const completedTasks = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
@@ -86,9 +91,12 @@ function TasksPageContent() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="py-8 px-4">
         <div className="container mx-auto flex items-center justify-between">
-            <div className="w-1/3 flex justify-start">
-                 <Link href="/stats" className="cursor-pointer">
-                    <UserLevel completedTasks={completedTasks} />
+            <div className="w-1/3 flex justify-start items-center gap-4">
+                 <Link href="/profile" className="cursor-pointer flex flex-col items-center text-center gap-1">
+                    <div className="h-12 w-12 flex items-center justify-center">
+                        <User className="h-10 w-10 text-primary" />
+                    </div>
+                    <span className="text-xs text-muted-foreground">پروفایل</span>
                  </Link>
             </div>
             
@@ -97,16 +105,24 @@ function TasksPageContent() {
                 <p className="text-muted-foreground mt-2">مدیریت کارها و وظایف</p>
             </div>
 
-            <div className="w-1/3 flex justify-end">
-              <Link href="/progress" className="cursor-pointer">
-                <div className="flex flex-col items-center gap-2 p-2">
-                    <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
-                    <div className="text-center">
-                        <p className="font-semibold text-sm">میزان پیشرفت</p>
-                        <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+            <div className="w-1/3 flex justify-end items-center gap-4">
+                <Link href="/stats" className="cursor-pointer flex flex-col items-center text-center gap-1">
+                    <UserLevel completedTasks={stats.totalCompletedCount} />
+                </Link>
+                <Button asChild variant="ghost" size="icon" className="h-auto w-auto group flex-col">
+                    <Link href="/achievements" className="flex flex-col items-center gap-1">
+                        <div className="h-12 w-12 flex items-center justify-center">
+                            <Medal className="h-10 w-10 text-primary group-hover:animate-pulse" />
+                        </div>
+                        <span className="text-xs text-muted-foreground">مدال‌ها</span>
+                    </Link>
+                </Button>
+                <Link href="/progress" className="cursor-pointer flex flex-col items-center text-center gap-1">
+                    <div className="flex flex-col items-center gap-2 h-12 w-12 justify-center">
+                        <ProgressCircle progress={progressPercentage} size={40} strokeWidth={4} />
                     </div>
-                </div>
-              </Link>
+                    <span className="text-xs text-muted-foreground">پیشرفت</span>
+                </Link>
             </div>
         </div>
       </header>

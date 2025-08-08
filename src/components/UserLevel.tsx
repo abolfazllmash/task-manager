@@ -29,12 +29,11 @@ export default function UserLevel({ completedTasks }: UserLevelProps) {
     const LevelIcon = level.icon;
 
     return (
-        <div className="flex flex-col items-center gap-2 p-2">
+        <>
             <LevelIcon className="h-12 w-12 p-2 rounded-full bg-card shadow-sm text-primary" />
             <div className="text-center">
-                <p className="font-semibold text-sm">سطح شما</p>
-                <p className="text-xs text-muted-foreground">{level.name}</p>
+                <p className="font-semibold text-xs text-muted-foreground">{level.name}</p>
             </div>
-        </div>
+        </>
     );
 }
