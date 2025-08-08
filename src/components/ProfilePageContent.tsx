@@ -9,9 +9,14 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useTaskContext } from './TaskProvider';
 import { achievements } from '@/lib/achievements';
-import { Award, Shield, Star, Swords, Zap, Medal } from 'lucide-react';
+import { Award, Shield, Star, Swords, Zap, Medal, User, Home, Briefcase, Heart, BookOpen, Dumbbell } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import type { Task, TaskType } from '@/lib/types';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import React from 'react';
+
 
 const ACHIEVEMENTS_STORAGE_KEY = 'offline-task-manager-achievements';
 
@@ -43,6 +48,37 @@ function getEarnedAchievementIds(): string[] {
     return [];
 }
 
+const taskTypeDetails: Record<TaskType, { label: string, icon: React.FC<any>, color: string }> = {
+    personal: { label: 'شخصی', icon: User, color: '#3b82f6' },
+    home: { label: 'خونه', icon: Home, color: '#22c55e' },
+    work: { label: 'کاری', icon: Briefcase, color: '#f59e0b' },
+    couple: { label: 'دوتایی', icon: Heart, color: '#ef4444' },
+    study: { label: 'درسی', icon: BookOpen, color: '#8b5cf6' },
+    club: { label: 'باشگاه', icon: Dumbbell, color: '#f97316' },
+};
+
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, payload }: any) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const Icon = taskTypeDetails[payload.name as TaskType]?.icon;
+
+    return (
+        <g>
+            <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize="12">
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+            {Icon && (
+                 <foreignObject x={x - 10} y={y - 28} width="20" height="20">
+                    <Icon className="text-white w-5 h-5" />
+                </foreignObject>
+            )}
+        </g>
+    );
+};
+
 
 export default function ProfilePageContent() {
     const { toast } = useToast();
@@ -63,6 +99,19 @@ export default function ProfilePageContent() {
         .filter(ach => earnedIds.has(ach.id))
         .slice(-4);
 
+    const taskTypeCounts = tasks.reduce((acc, task) => {
+        if (task.completed) {
+            acc[task.type] = (acc[task.type] || 0) + 1;
+        }
+        return acc;
+    }, {} as Record<TaskType, number>);
+
+    const chartData = Object.entries(taskTypeCounts).map(([key, value]) => ({
+        name: key as TaskType,
+        value,
+        color: taskTypeDetails[key as TaskType]?.color || '#ccc'
+    }));
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -74,7 +123,7 @@ export default function ProfilePageContent() {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-8">
                 <Card>
                     <CardHeader>
                         <CardTitle>اطلاعات کاربری</CardTitle>
@@ -107,6 +156,51 @@ export default function ProfilePageContent() {
                             
                             <Button type="submit" className="w-full">ذخیره تغییرات</Button>
                         </form>
+                    </CardContent>
+                </Card>
+                 <Card>
+                     <CardHeader>
+                        <CardTitle>تفکیک وظایف انجام شده</CardTitle>
+                        <CardDescription>نمودار توزیع وظایف تکمیل‌شده بر اساس نوع.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                       {chartData.length > 0 ? (
+                            <ChartContainer config={{}} className="mx-auto aspect-square h-[350px]">
+                                <PieChart>
+                                    <Tooltip
+                                        cursor={false}
+                                        content={<ChartTooltipContent 
+                                            formatter={(value, name) => (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full" style={{backgroundColor: taskTypeDetails[name as TaskType].color}}></div>
+                                                    <span className="font-semibold">{taskTypeDetails[name as TaskType].label}:</span>
+                                                    <span>{value}</span>
+                                                </div>
+                                            )}
+                                        />}
+                                    />
+                                    <Pie
+                                        data={chartData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={140}
+                                        fill="#8884d8"
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                    >
+                                        {chartData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                </PieChart>
+                            </ChartContainer>
+                       ) : (
+                           <div className="flex items-center justify-center h-[350px] text-muted-foreground">
+                                هنوز وظیفه انجام‌شده‌ای برای نمایش وجود ندارد.
+                           </div>
+                       )}
                     </CardContent>
                 </Card>
             </div>
