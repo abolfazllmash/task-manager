@@ -6,7 +6,7 @@ import { Suspense, useState, useEffect } from 'react';
 import ProgressCircle from '@/components/ProgressCircle';
 import UserLevel from '@/components/UserLevel';
 import Link from 'next/link';
-import { Medal } from 'lucide-react';
+import { Medal, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const quotes = [
@@ -98,6 +98,15 @@ function TasksPageContent() {
                         <span className="text-xs text-muted-foreground">مدال‌ها</span>
                      </Link>
                   </Button>
+                   <Link href="/progress" className="cursor-pointer">
+                    <div className="flex flex-col items-center gap-2 p-2">
+                        <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
+                        <div className="text-center">
+                            <p className="font-semibold text-sm">میزان پیشرفت</p>
+                            <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
+                        </div>
+                    </div>
+                  </Link>
             </div>
             
             <div className="w-1/3 text-center">
@@ -106,15 +115,12 @@ function TasksPageContent() {
             </div>
 
             <div className="w-1/3 flex justify-end">
-              <Link href="/progress" className="cursor-pointer">
-                <div className="flex flex-col items-center gap-2 p-2">
-                    <ProgressCircle progress={progressPercentage} size={80} strokeWidth={6} />
-                    <div className="text-center">
-                        <p className="font-semibold text-sm">میزان پیشرفت</p>
-                        <p className="text-xs text-muted-foreground">{completedTasks} از {totalTasks} وظیفه</p>
-                    </div>
-                </div>
-              </Link>
+                <Button asChild variant="ghost" size="icon" className="h-14 w-14 group">
+                     <Link href="/profile" className="flex flex-col items-center gap-1">
+                        <User className="h-8 w-8 text-primary group-hover:animate-pulse" />
+                        <span className="text-xs text-muted-foreground">پروفایل</span>
+                     </Link>
+                </Button>
             </div>
         </div>
       </header>
